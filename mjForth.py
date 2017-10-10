@@ -2,7 +2,7 @@
 
 # -*- coding: utf-8 -*-
 
-from core import Env as Words 
+from core import Env as Words
 from core import Data, Return
 
 from copy import copy, deepcopy
@@ -36,9 +36,10 @@ def takewhile_and_pop(match_condition, list_of_tokens):
 
 def must_be_defined(word):
     safe_words = ('?DO', 'i', 'LOOP', '', ' ')
-    return (word not in Words   
-        and not word.isnumeric()  
+    return (word not in Words
+        and not word.isnumeric()
         and word not in safe_words)
+
 
 def define_word(input_list_ref):
     """
@@ -46,7 +47,7 @@ def define_word(input_list_ref):
 
     This function will be called if the preceding token is ':'
 
-    If the remaining input string can't be parsed correctly, 
+    If the remaining input string can't be parsed correctly,
     input_list_ref will be .clear()'ed and we'll return False.
 
     If the input string *can* be parsed, the newly defined
@@ -125,7 +126,7 @@ def handle_term(term, input_list_ref):
         doloop_body = takewhile_and_pop(lambda x: x !='LOOP', input_list_ref)
         run_loop(doloop_body)
     elif term in Words: # Function call
-        call_word(term, input_list_ref) 
+        call_word(term, input_list_ref)
     elif term == 'see': # Function documentation
         show_definition(input_list_ref.pop())
     else:
@@ -140,7 +141,7 @@ def main():
             input_list = input('mjF> ').strip().replace('(', '( '). \
                                        replace(')', ' )').          \
                                        replace(';', ' ; ').         \
-                                       split(' ')   
+                                       split(' ')
             while input_list:
                 term = input_list.pop(0)
                 handle_term(term, input_list)
@@ -148,7 +149,7 @@ def main():
             print('')
         except EOFError:
             print('')
-            sys.exit() 
+            sys.exit()
 
 if __name__ == '__main__':
     main()

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from Stack import Stack 
+from Stack import Stack
 
 from functools import wraps
 import operator
@@ -25,6 +25,7 @@ def dup():
     topcopy = Data.peek()
     Data.push(topcopy)
 
+
 def over():
     copiedval = copy(Data.contents[-2])
     Data.push(copiedval)
@@ -42,7 +43,7 @@ def nip():
 def tuck():
     swap()
     over()
-    
+
 
 def add():
     """ This is a custom `add` implementation. """
@@ -98,7 +99,7 @@ Env =  {'exit'  : {'doc': 'Exits the session.', 'fn': sys.exit},
         '-'     : wordify(subtract),
         '*'     : wordify(multiply),
         '/'     : wordify(divide),
-        'mod'   : wordify(mod), 
+        'mod'   : wordify(mod),
         'drop'  : wordify(drop),
         'swap'  : wordify(swap),
         'dup'   : wordify(dup),

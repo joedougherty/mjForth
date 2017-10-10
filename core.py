@@ -63,7 +63,8 @@ def multiply():
 
 def divide():
     """ This is a custom `divide` implementation. """
-    Data.push(int(Data.pop() / (Data.pop()*1.0)))
+    a, b = Data.pop(), Data.pop()
+    Data.push(int(b / (a*1.0)))
 
 
 def mod():

@@ -14,6 +14,10 @@ import sys
 __version__ = '0.0.2'
 
 
+TRUE = -1
+FALSE = 0
+
+
 def welcome():
     msg = """mjForth {}, Copyright (C) 2017 Joe Dougherty.""".format(__version__)
     msg += """\nType `exit` to quit.\n"""
@@ -125,6 +129,10 @@ def handle_term(term, input_list_ref):
         return True
     if term.isnumeric():
         Data.push(int(term))
+    elif term == 'true':
+        Data.push(TRUE)
+    elif term == 'false':
+        Data.push(FALSE)
     elif term == ':': # Function definition
         define_word(input_list_ref)
     elif term == '?DO':
@@ -139,7 +147,7 @@ def handle_term(term, input_list_ref):
         print("I don't know what to do with `{}` !!!".format(term))
 
 
-def clean_input_line(input_line):
+def tokenize(input_line):
     return input_line.strip().  \
            replace('(', '( ').  \
            replace(')', ' )').  \
@@ -152,7 +160,7 @@ def main():
 
     while True:
         try:
-            input_list = clean_input_line(input('mjF> '))
+            input_list = tokenize(input('mjF> '))
             while input_list:
                 term = input_list.pop(0)
                 handle_term(term, input_list)
@@ -168,7 +176,7 @@ def execute_file(abs_path_to_file):
         lines = [l.strip() for l in f.readlines()]
 
     for line in lines:
-        input_list = clean_input_line(line)
+        input_list = tokenize(line)
         while input_list:
             term = input_list.pop(0)
             handle_term(term, input_list)

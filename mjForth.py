@@ -7,6 +7,7 @@ from core import Data, Return
 
 from copy import copy, deepcopy
 from itertools import takewhile
+import os
 import readline
 import sys
 
@@ -19,15 +20,20 @@ def welcome():
     print(msg)
 
 
-def takewhile_and_pop(match_condition, list_of_tokens):
+def takewhile_and_pop(match_token, list_of_tokens):
     """
-    Remove tokens from the list_of_tokens until the match_condition
-    is met.
+    Remove tokens from the list_of_tokens until the match_token
+    is encountered.
 
     Return the matched tokens as a new list. Remove the applicable
     tokens from list_of_tokens.
     """
-    tw = [i for i in takewhile(match_condition, list_of_tokens)]
+
+    if match_token not in list_of_tokens:
+        print('Expected to encounter \'{}\', but did not see it in list_of_tokens!'.format(match_token))
+        return False
+
+    tw = [i for i in takewhile(lambda t: t != match_token, list_of_tokens)]
     for found_item in tw:
         list_of_tokens.pop(0)
     list_of_tokens.pop(0) # Remove matching character
@@ -56,12 +62,12 @@ def define_word(input_list_ref):
     name = input_list_ref.pop(0)
     if input_list_ref[0] == '(':
         input_list_ref.pop(0) # Pop (
-        comment = takewhile_and_pop(lambda x: x != ')', input_list_ref)
+        comment = takewhile_and_pop(')', input_list_ref)
     else:
         print("Name must be followed by paren docs! Was trying to define: '{}'".format(name))
         input_list_ref.clear()
         return False
-    body = takewhile_and_pop(lambda x: x != ';', input_list_ref)
+    body = takewhile_and_pop(';', input_list_ref)
 
     for word in body:
         if must_be_defined(word):
@@ -123,7 +129,7 @@ def handle_term(term, input_list_ref):
         define_word(input_list_ref)
     elif term == '?DO':
         # Execute DO LOOP
-        doloop_body = takewhile_and_pop(lambda x: x !='LOOP', input_list_ref)
+        doloop_body = takewhile_and_pop('LOOP', input_list_ref)
         run_loop(doloop_body)
     elif term in Words: # Function call
         call_word(term, input_list_ref)
@@ -133,15 +139,20 @@ def handle_term(term, input_list_ref):
         print("I don't know what to do with `{}` !!!".format(term))
 
 
+def clean_input_line(input_line):
+    return input_line.strip().  \
+           replace('(', '( ').  \
+           replace(')', ' )').  \
+           replace(';', ' ; '). \
+           split(' ')
+
+
 def main():
     welcome()
 
     while True:
         try:
-            input_list = input('mjF> ').strip().replace('(', '( '). \
-                                       replace(')', ' )').          \
-                                       replace(';', ' ; ').         \
-                                       split(' ')
+            input_list = clean_input_line(input('mjF> '))
             while input_list:
                 term = input_list.pop(0)
                 handle_term(term, input_list)
@@ -151,5 +162,21 @@ def main():
             print('')
             sys.exit()
 
+
+def execute_file(abs_path_to_file):
+    with open(abs_path_to_file, 'r') as f:
+        lines = [l.strip() for l in f.readlines()]
+
+    for line in lines:
+        input_list = clean_input_line(line)
+        while input_list:
+            term = input_list.pop(0)
+            handle_term(term, input_list)
+
+
 if __name__ == '__main__':
-    main()
+    if len(sys.argv) > 1 and sys.argv[1] and os.path.exists(sys.argv[1]):
+        execute_file(sys.argv[1])
+    else:
+        main()
+

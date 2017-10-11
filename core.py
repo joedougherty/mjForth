@@ -2,6 +2,7 @@
 
 from Stack import Stack
 
+from copy import copy
 from functools import wraps
 import operator
 import sys
@@ -9,6 +10,10 @@ import sys
 
 Data = Stack()
 Return = Stack()
+
+
+def clear():
+    Data.contents.clear()
 
 
 def drop():
@@ -110,7 +115,8 @@ Env =  {'exit'  : {'doc': 'Exits the session.', 'fn': sys.exit},
         'tuck'  : wordify(tuck),
         '.'     : wordify(dot),
         '.s'    : wordify(dot_s),
-        'words' : wordify(words)}
+        'words' : wordify(words),
+        'clear' : wordify(clear)}
 
 # Aliases
 Env['add'] = Env['+']

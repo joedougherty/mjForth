@@ -48,7 +48,7 @@ def must_be_defined(word):
         and word not in RESERVED)
 
 
-d ef define_word(input_list_ref):
+def define_word(input_list_ref):
     """
     Extract the name, paren comment, and body for the word being defined.
 

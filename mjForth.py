@@ -198,7 +198,6 @@ def execute_file(abs_path_to_file):
     for line in lines:
         consume_tokens(tokenize(line))
 
-    sys.exit(0)
 
 if __name__ == '__main__':
     if len(sys.argv) > 1 and sys.argv[1] and os.path.exists(sys.argv[1]):

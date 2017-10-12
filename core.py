@@ -3,10 +3,11 @@
 from Stack import Stack
 
 from copy import copy
-from functools import wraps
 import operator
 import sys
 
+TRUE = -1
+FALSE = 0
 
 Data = Stack()
 Return = Stack()
@@ -78,6 +79,23 @@ def mod():
     Data.push(operator.mod(b,a))
 
 
+def equals():
+    """ Are the top two stack items equal? """
+    if Data.pop() == Data.pop():
+        Data.push(TRUE)
+    else:
+        Data.push(FALSE)
+
+
+def equals_zero():
+    """ Pop the top. Does it equal 0? """
+    top = Data.pop()
+    if top == 0:
+        Data.push(TRUE)
+    else:
+        Data.push(FALSE)
+
+
 def dot():
     """ Pop 'n print! """
     print(Data.pop())
@@ -116,7 +134,9 @@ Env =  {'exit'  : {'doc': 'Exits the session.', 'fn': sys.exit},
         '.'     : wordify(dot),
         '.s'    : wordify(dot_s),
         'words' : wordify(words),
-        'clear' : wordify(clear)}
+        'clear' : wordify(clear),
+        '0='    : wordify(equals_zero),
+        '='     : wordify(equals)}
 
 # Aliases
 Env['add'] = Env['+']

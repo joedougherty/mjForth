@@ -3,7 +3,7 @@
 # -*- coding: utf-8 -*-
 
 from core import Env as Words
-from core import Data, Return
+from core import Data, Return, TRUE, FALSE
 
 from copy import copy, deepcopy
 from itertools import takewhile
@@ -14,8 +14,7 @@ import sys
 __version__ = '0.0.2'
 
 
-TRUE = -1
-FALSE = 0
+RESERVED = ('?DO', 'i', 'LOOP', '', ' ', 'IF', 'ELSE', 'ENDIF', 'true', 'false')
 
 
 def welcome():
@@ -34,7 +33,7 @@ def takewhile_and_pop(match_token, list_of_tokens):
     """
 
     if match_token not in list_of_tokens:
-        print('Expected to encounter \'{}\', but did not see it in list_of_tokens!'.format(match_token))
+        print("Expected to encounter '{}', but did not see it in list_of_tokens!".format(match_token))
         return False
 
     tw = [i for i in takewhile(lambda t: t != match_token, list_of_tokens)]
@@ -45,10 +44,9 @@ def takewhile_and_pop(match_token, list_of_tokens):
 
 
 def must_be_defined(word):
-    safe_words = ('?DO', 'i', 'LOOP', '', ' ')
     return (word not in Words
         and not word.isnumeric()
-        and word not in safe_words)
+        and word not in RESERVED)
 
 
 def define_word(input_list_ref):
@@ -103,9 +101,7 @@ def show_definition(word):
 def call_word(term, input_list_ref):
     if isinstance(Words[term]['fn'], list):
         fn_list = copy(Words[term]['fn'])
-        while fn_list:
-            token = fn_list.pop(0)
-            handle_term(token, fn_list)
+        consume_tokens(fn_list)
     elif callable(Words[term]['fn']):
         try:
             Words[term]['fn']()
@@ -115,13 +111,33 @@ def call_word(term, input_list_ref):
         print("I don't know what to do with `{}` !!!".format(term))
 
 
+def resolve_iterator(i, fn_body_as_word_list):
+    for idx, item in enumerate(fn_body_as_word_list):
+        if item == 'i':
+            fn_body_as_word_list[idx] = str(i)
+
+    return fn_body_as_word_list
+
+
 def run_loop(fn_body_as_word_list):
     _from, _to = Data.pop(), Data.pop()
     for i in range(_from, _to):
-        for item in fn_body_as_word_list:
-            if item == 'i':
-                item = str(i)
-            handle_term(item, fn_body_as_word_list)
+        input_list = resolve_iterator(i, copy(fn_body_as_word_list))
+        consume_tokens(input_list)
+
+
+def parse_conditional(input_list_ref):
+    cond_body = takewhile_and_pop('ENDIF', input_list_ref)
+    if not 'ELSE' in cond_body:
+        if Data.pop() == TRUE:
+            consume_tokens(cond_body)        
+    else:
+        iftrue = takewhile_and_pop('ELSE', cond_body)
+        otherwise = cond_body
+        if Data.pop() == TRUE:
+            consume_tokens(iftrue)
+        else:
+            consume_tokens(otherwise)
 
 
 def handle_term(term, input_list_ref):
@@ -135,14 +151,15 @@ def handle_term(term, input_list_ref):
         Data.push(FALSE)
     elif term == ':': # Function definition
         define_word(input_list_ref)
-    elif term == '?DO':
-        # Execute DO LOOP
+    elif term == '?DO': # Execute DO LOOP
         doloop_body = takewhile_and_pop('LOOP', input_list_ref)
         run_loop(doloop_body)
     elif term in Words: # Function call
         call_word(term, input_list_ref)
     elif term == 'see': # Function documentation
         show_definition(input_list_ref.pop())
+    elif term == 'IF':
+        parse_conditional(input_list_ref)
     else:
         print("I don't know what to do with `{}` !!!".format(term))
 
@@ -155,20 +172,23 @@ def tokenize(input_line):
            split(' ')
 
 
+def consume_tokens(input_list):
+    while input_list:
+        term = input_list.pop(0)
+        handle_term(term, input_list)
+
+
 def main():
     welcome()
 
     while True:
         try:
-            input_list = tokenize(input('mjF> '))
-            while input_list:
-                term = input_list.pop(0)
-                handle_term(term, input_list)
+            consume_tokens(tokenize(input('mjF> ')))
         except KeyboardInterrupt:
             print('')
         except EOFError:
             print('')
-            sys.exit()
+            sys.exit(0)
 
 
 def execute_file(abs_path_to_file):
@@ -176,15 +196,11 @@ def execute_file(abs_path_to_file):
         lines = [l.strip() for l in f.readlines()]
 
     for line in lines:
-        input_list = tokenize(line)
-        while input_list:
-            term = input_list.pop(0)
-            handle_term(term, input_list)
+        consume_tokens(tokenize(line))
 
+    sys.exit(0)
 
 if __name__ == '__main__':
     if len(sys.argv) > 1 and sys.argv[1] and os.path.exists(sys.argv[1]):
         execute_file(sys.argv[1])
-    else:
-        main()
-
+    main()

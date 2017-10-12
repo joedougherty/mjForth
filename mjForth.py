@@ -31,7 +31,6 @@ def takewhile_and_pop(match_token, list_of_tokens):
     Return the matched tokens as a new list. Remove the applicable
     tokens from list_of_tokens.
     """
-
     if match_token not in list_of_tokens:
         print("Expected to encounter '{}', but did not see it in list_of_tokens!".format(match_token))
         return False
@@ -49,7 +48,7 @@ def must_be_defined(word):
         and word not in RESERVED)
 
 
-def define_word(input_list_ref):
+d ef define_word(input_list_ref):
     """
     Extract the name, paren comment, and body for the word being defined.
 
@@ -98,7 +97,7 @@ def show_definition(word):
         print('  ' + ' '.join([str(i) for i in Words[word]['fn']]))
 
 
-def call_word(term, input_list_ref):
+def call_word(term, input_li st_ref):
     if isinstance(Words[term]['fn'], list):
         fn_list = copy(Words[term]['fn'])
         consume_tokens(fn_list)
@@ -112,6 +111,11 @@ def call_word(term, input_list_ref):
 
 
 def resolve_iterator(i, fn_body_as_word_list):
+    """
+    Given an input list as fn_body_as_word_list,
+    replace instances of 'i' with a string version
+    of the current iterator.
+    """
     for idx, item in enumerate(fn_body_as_word_list):
         if item == 'i':
             fn_body_as_word_list[idx] = str(i)
@@ -129,8 +133,9 @@ def run_loop(fn_body_as_word_list):
 def parse_conditional(input_list_ref):
     cond_body = takewhile_and_pop('ENDIF', input_list_ref)
     if not 'ELSE' in cond_body:
+        # This is a simple statement. No ELSE to contend with.
         if Data.pop() == TRUE:
-            consume_tokens(cond_body)        
+            consume_tokens(cond_body)
     else:
         iftrue = takewhile_and_pop('ELSE', cond_body)
         otherwise = cond_body
@@ -200,6 +205,10 @@ def execute_file(abs_path_to_file):
 
 
 if __name__ == '__main__':
-    if len(sys.argv) > 1 and sys.argv[1] and os.path.exists(sys.argv[1]):
-        execute_file(sys.argv[1])
+    if len(sys.argv) > 1 and sys.argv[1]:
+        if os.path.exists(sys.argv[1]):
+            execute_file(sys.argv[1])
+        else:
+            print("Could not find {}!".format(sys.argv[1]))
+            sys.exit(2)
     main()

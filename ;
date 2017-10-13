@@ -14,8 +14,7 @@ import sys
 __version__ = '0.0.2'
 
 
-RESERVED = ('?DO', 'i', 'LOOP', '', ' ', 'IF', 'ELSE', 'ENDIF', 
-            'true', 'false', 'BEGIN', 'WHILE', 'REPEAT')
+RESERVED = ('?DO', 'i', 'LOOP', '', ' ', 'IF', 'ELSE', 'ENDIF', 'true', 'false')
 
 
 def welcome():
@@ -98,7 +97,7 @@ def show_definition(word):
         print('  ' + ' '.join([str(i) for i in Words[word]['fn']]))
 
 
-def call_word(term, input_list_ref):
+def call_word(term, input_li st_ref):
     if isinstance(Words[term]['fn'], list):
         fn_list = copy(Words[term]['fn'])
         consume_tokens(fn_list)
@@ -124,25 +123,11 @@ def resolve_iterator(i, fn_body_as_word_list):
     return fn_body_as_word_list
 
 
-def run_doloop(word_list):
+def run_doloop(fn_body_as_word_list):
     _from, _to = Data.pop(), Data.pop()
     for i in range(_from, _to):
-        input_list = resolve_iterator(i, copy(word_list))
+        input_list = resolve_iterator(i, copy(fn_body_as_word_list))
         consume_tokens(input_list)
-   
-
-# https://www.complang.tuwien.ac.at/forth/gforth/Docs-html/Simple-Loops.html#Simple-Loops
-def run_whileloop(while_loop_body):
-    code1_and_flag = takewhile_and_pop('WHILE', while_loop_body)
-    code2 = while_loop_body
-        
-    flag_value = TRUE
-    while flag_value == TRUE:
-        consume_tokens(copy(code1_and_flag))
-        if Data.pop() == TRUE:
-            consume_tokens(copy(code2))
-        else:
-            flag_value = FALSE
 
 
 def parse_conditional(input_list_ref):
@@ -171,10 +156,10 @@ def handle_term(term, input_list_ref):
         Data.push(FALSE)
     elif term == ':': # Function definition
         define_word(input_list_ref)
-    elif term == '?DO': # Execute DO loop
+    elif term == '?DO': # Execute DO LOOP
         doloop_body = takewhile_and_pop('LOOP', input_list_ref)
         run_doloop(doloop_body)
-    elif term == 'BEGIN': # Execute WHILE loop
+    elif termn == 'BEGIN':
         whileloop_body = takewhile_and_pop('REPEAT', input_list_ref)
         run_whileloop(whileloop_body)
     elif term in Words: # Function call

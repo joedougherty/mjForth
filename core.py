@@ -114,6 +114,24 @@ def words():
     print(word_list)
 
 
+def greaterthan():
+    """ > ? """
+    a, b = Data.pop(), Data.pop()
+    if b > a:
+        Data.push(TRUE)
+    else:
+        Data.push(FALSE)
+
+
+def lessthan():
+    """ < ? """
+    a, b = Data.pop(), Data.pop()
+    if b < a:
+        Data.push(TRUE)
+    else:
+        Data.push(FALSE)
+
+
 def wordify(word_as_fn):
     return {'doc': word_as_fn.__doc__, 'fn': word_as_fn}
 
@@ -136,7 +154,9 @@ Env =  {'exit'  : {'doc': 'Exits the session.', 'fn': sys.exit},
         'words' : wordify(words),
         'clear' : wordify(clear),
         '0='    : wordify(equals_zero),
-        '='     : wordify(equals)}
+        '='     : wordify(equals),
+        '>'     : wordify(greaterthan),
+        '<'     : wordify(lessthan)}
 
 # Aliases
 Env['add'] = Env['+']

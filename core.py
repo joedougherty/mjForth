@@ -132,6 +132,11 @@ def lessthan():
         Data.push(FALSE)
 
 
+def minusone():
+    """ Subtract 1 from the top val of the stack. """
+    Data.push(Data.pop() - 1)
+
+
 def wordify(word_as_fn):
     return {'doc': word_as_fn.__doc__, 'fn': word_as_fn}
 
@@ -156,7 +161,8 @@ Env =  {'exit'  : {'doc': 'Exits the session.', 'fn': sys.exit},
         '0='    : wordify(equals_zero),
         '='     : wordify(equals),
         '>'     : wordify(greaterthan),
-        '<'     : wordify(lessthan)}
+        '<'     : wordify(lessthan),
+        '1-'    : wordify(minusone)}
 
 # Aliases
 Env['add'] = Env['+']

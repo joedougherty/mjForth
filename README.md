@@ -52,7 +52,7 @@ Use `see` to view the definition of a word.
 
 `BEGIN ... WHILE ... REPEAT`
 
-### Global variables (Memory) ###
+### Global Variables (Memory) ###
 
 Declare a variable.
 
@@ -65,3 +65,7 @@ Set the value.
 Get its value and push on top of the data stack.
 
 `v @`
+
+## Notes ##
+
+[\*] Must be used with the context of a colon definition.

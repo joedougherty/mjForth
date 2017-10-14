@@ -161,6 +161,16 @@ def parse_conditional(input_list_ref):
             consume_tokens(otherwise)
 
 
+def set_or_get_variable(term, input_list_ref):
+    next_token = input_list_ref.pop(0)
+    if next_token == '!':
+        Memory[term] = Data.pop()
+    elif next_token == '@':
+        Data.push(Memory[term])
+    else:
+        print("Was trying to set variable given by '{}' but something went awfully awry!")
+
+
 def handle_term(term, input_list_ref):
     if term == '':
         return True
@@ -187,13 +197,7 @@ def handle_term(term, input_list_ref):
     elif term == 'variable':
         Memory[input_list_ref.pop(0)] = 0
     elif term in Memory:
-        next_token = input_list_ref.pop(0)
-        if next_token == '!':
-            Memory[term] = Data.pop()
-        elif next_token == '@':
-            Data.push(Memory[term])
-        else:
-            print("Was trying to set variable given by '{}' but something went awfully awry!")
+        set_or_get_variable(term, input_list_ref) 
     else:
         print("I don't know what to do with `{}` !!!".format(term))
 

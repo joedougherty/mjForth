@@ -14,16 +14,16 @@ An experimental Forth interpreter. Seeks to emulate a subset of [gforth](https:/
 
 ### Integer Math ###
     
-* +
-* -
-* *
+* \+
+* \-
+* \*
 * /
 * mod
 * 0=
 * 1-
 * 1+
-* <
-* >
+* &lt;
+* &gt;
 
 ### Colon Definitions ###
 
@@ -35,12 +35,13 @@ Use `see` to view the definition of a word.
 
 ### Booleans ###
     
-* true
-* false
+* `true`
+* `false`
 
 ### Conditional Branching [\*] ###
 
 `IF ... ENDIF`
+
 `IF ... ELSE ... ENDIF`
 
 ### Counted (?DO) Loops [\*] ###

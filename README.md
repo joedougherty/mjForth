@@ -4,26 +4,26 @@ An experimental Forth interpreter. Seeks to emulate a subset of [gforth](https:/
 
 ### Stack Manipulations ###
 
-    * drop
-    * swap 
-    * dup
-    * over
-    * rot
-    * nip 
-    * tuck
+* drop
+* swap 
+* dup
+* over
+* rot
+* nip 
+* tuck
 
 ### Integer Math ###
     
-    * +
-    * -
-    * *
-    * /
-    * mod
-    * 0=
-    * 1-
-    * 1+
-    * <
-    * >
+* +
+* -
+* *
+* /
+* mod
+* 0=
+* 1-
+* 1+
+* <
+* >
 
 ### Colon Definitions ###
 
@@ -35,8 +35,8 @@ Use `see` to view the definition of a word.
 
 ### Booleans ###
     
-    * true
-    * false
+* true
+* false
 
 ### Conditional Branching [\*] ###
 
@@ -55,12 +55,12 @@ Use `see` to view the definition of a word.
 
 Declare a variable.
 
-    `variable v`
+`variable v`
 
 Set the value.
 
-    `1000 v !`
+`1000 v !`
 
 Get its value and push on top of the data stack.
 
-    `v @`
+`v @`

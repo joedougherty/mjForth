@@ -161,15 +161,6 @@ def parse_conditional(input_list_ref):
             consume_tokens(otherwise)
 
 
-def get_set_variable(input_list_ref):
-    next_token = input_list_ref.pop(0), input_list_ref.pop(0)
-    if next_token == "!": # Set
-        Memory[varname] = Data.pop()
-    elif next_token == "@": # Get
-        Data.push(Memory[varname])
-    else:
-        print("Unsure how to proceed with {}. :(".format(varname))
-
 def handle_term(term, input_list_ref):
     if term == '':
         return True

@@ -3,7 +3,7 @@
 # -*- coding: utf-8 -*-
 
 from core import Env as Words
-from core import Data, Return, TRUE, FALSE
+from core import Data, Return, TRUE, FALSE, Memory
 
 from copy import copy, deepcopy
 from itertools import takewhile
@@ -15,7 +15,7 @@ __version__ = '0.0.2'
 
 
 RESERVED = ('?DO', 'i', 'LOOP', '', ' ', 'IF', 'ELSE', 'ENDIF', 
-            'true', 'false', 'BEGIN', 'WHILE', 'REPEAT')
+            'true', 'false', 'BEGIN', 'WHILE', 'REPEAT', '!', '@')
 
 
 def welcome():
@@ -45,6 +45,7 @@ def takewhile_and_pop(match_token, list_of_tokens):
 
 def must_be_defined(word):
     return (word not in Words
+        and word not in Memory
         and not word.isnumeric()
         and word not in RESERVED)
 
@@ -160,6 +161,15 @@ def parse_conditional(input_list_ref):
             consume_tokens(otherwise)
 
 
+def get_set_variable(input_list_ref):
+    next_token = input_list_ref.pop(0), input_list_ref.pop(0)
+    if next_token == "!": # Set
+        Memory[varname] = Data.pop()
+    elif next_token == "@": # Get
+        Data.push(Memory[varname])
+    else:
+        print("Unsure how to proceed with {}. :(".format(varname))
+
 def handle_term(term, input_list_ref):
     if term == '':
         return True
@@ -183,6 +193,16 @@ def handle_term(term, input_list_ref):
         show_definition(input_list_ref.pop())
     elif term == 'IF':
         parse_conditional(input_list_ref)
+    elif term == 'variable':
+        Memory[input_list_ref.pop(0)] = 0
+    elif term in Memory:
+        next_token = input_list_ref.pop(0)
+        if next_token == '!':
+            Memory[term] = Data.pop()
+        elif next_token == '@':
+            Data.push(Memory[term])
+        else:
+            print("Was trying to set variable given by '{}' but something went awfully awry!")
     else:
         print("I don't know what to do with `{}` !!!".format(term))
 

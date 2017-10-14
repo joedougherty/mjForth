@@ -11,7 +11,7 @@ FALSE = 0
 
 Data = Stack()
 Return = Stack()
-
+Memory = dict()
 
 def clear():
     Data.contents.clear()
@@ -142,33 +142,42 @@ def plusone():
     Data.push(Data.pop() + 1)
 
 
+def showmem():
+    if Memory == dict():
+        print('No global variables defined!')
+    else:
+        for k, v in Memory.items():
+            print('{}: {}'.format(k, v))
+
+
 def wordify(word_as_fn):
     return {'doc': word_as_fn.__doc__, 'fn': word_as_fn}
 
 
-Env =  {'exit'  : {'doc': 'Exits the session.', 'fn': sys.exit},
-        '+'     : wordify(add),
-        '-'     : wordify(subtract),
-        '*'     : wordify(multiply),
-        '/'     : wordify(divide),
-        'mod'   : wordify(mod),
-        'drop'  : wordify(drop),
-        'swap'  : wordify(swap),
-        'dup'   : wordify(dup),
-        'over'  : wordify(over),
-        'rot'   : wordify(rot),
-        'nip'   : wordify(nip),
-        'tuck'  : wordify(tuck),
-        '.'     : wordify(dot),
-        '.s'    : wordify(dot_s),
-        'words' : wordify(words),
-        'clear' : wordify(clear),
-        '0='    : wordify(equals_zero),
-        '='     : wordify(equals),
-        '>'     : wordify(greaterthan),
-        '<'     : wordify(lessthan),
-        '1-'    : wordify(minusone),
-        '1+'    : wordify(plusone)}
+Env =  {'exit'      : {'doc': 'Exits the session.', 'fn': sys.exit},
+        '+'         : wordify(add),
+        '-'         : wordify(subtract),
+        '*'         : wordify(multiply),
+        '/'         : wordify(divide),
+        'mod'       : wordify(mod),
+        'drop'      : wordify(drop),
+        'swap'      : wordify(swap),
+        'dup'       : wordify(dup),
+        'over'      : wordify(over),
+        'rot'       : wordify(rot),
+        'nip'       : wordify(nip),
+        'tuck'      : wordify(tuck),
+        '.'         : wordify(dot),
+        '.s'        : wordify(dot_s),
+        'words'     : wordify(words),
+        'clear'     : wordify(clear),
+        '0='        : wordify(equals_zero),
+        '='         : wordify(equals),
+        '>'         : wordify(greaterthan),
+        '<'         : wordify(lessthan),
+        '1-'        : wordify(minusone),
+        '1+'        : wordify(plusone),
+        'showmem'   : wordify(showmem)}
 
 # Aliases
 Env['add'] = Env['+']

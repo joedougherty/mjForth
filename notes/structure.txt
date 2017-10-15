@@ -1,0 +1,46 @@
+## The Players ##
+
+* Data stack
+* Literals
+* Words 
+
+## What to do with input? ## 
+
+All input flows through `consume_tokens`. `consume_tokens` expects a list of tokens.
+(Input is first "formatted" by running it through `tokenize`.)
+
+
+Example:
+========
+
+    # SOURCE: ($ROOTDIR/mjForth.py | 212)
+    def consume_tokens(input_list):
+        while input_list:
+            term = input_list.pop(0)
+            handle_term(term, input_list)
+
+
+`handle_term` routes the given word to the correct action. There are a small number of possible routes:
+
+
+Input Types Routing:
+===================
+
+Types of input to deal with:
+    
+    * Terminating Branches:
+
+        * literals (ints, true, false)
+        * Built-in words
+        * word definition
+        * see
+        * variable declaration (in globally-accessible Memory)
+        * variable store/fetch 
+
+    * Non-terminating Branches:
+    
+        * do loop
+        * while loop
+        * User-defined words
+        * conditional (IF ... ENDIF / IF ... ELSE .. ENDIF )
+

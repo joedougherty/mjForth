@@ -2,8 +2,7 @@
 
 # -*- coding: utf-8 -*-
 
-from core import Env as Words
-from core import Data, Return, TRUE, FALSE, Memory
+from core import Data, Return, TRUE, FALSE, Memory, Words
 
 from copy import copy, deepcopy
 from itertools import takewhile
@@ -195,7 +194,7 @@ def handle_term(term, input_list_ref):
     elif term == 'IF':
         parse_conditional(input_list_ref)
     elif term == 'variable':
-        Memory[input_list_ref.pop(0)] = 0
+        Memory[input_list_ref.pop(0)] = None
     elif term in Memory:
         set_or_get_variable(term, input_list_ref) 
     else:

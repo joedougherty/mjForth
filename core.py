@@ -109,7 +109,7 @@ def dot_s():
 def words():
     """ List the known words. """
     word_list = ''
-    for word in Env:
+    for word in Words:
         word_list += word + ' '
     print(word_list)
 
@@ -154,7 +154,7 @@ def wordify(word_as_fn):
     return {'doc': word_as_fn.__doc__, 'fn': word_as_fn}
 
 
-Env =  {'exit'      : {'doc': 'Exits the session.', 'fn': sys.exit},
+Words =  {'exit'      : {'doc': 'Exits the session.', 'fn': sys.exit},
         '+'         : wordify(add),
         '-'         : wordify(subtract),
         '*'         : wordify(multiply),
@@ -180,7 +180,7 @@ Env =  {'exit'      : {'doc': 'Exits the session.', 'fn': sys.exit},
         'showmem'   : wordify(showmem)}
 
 # Aliases
-Env['add'] = Env['+']
-Env['subtract'] = Env['-']
-Env['multiply'] = Env['*']
-Env['divide'] = Env['/']
+Words['add'] = Words['+']
+Words['subtract'] = Words['-']
+Words['multiply'] = Words['*']
+Words['divide'] = Words['/']

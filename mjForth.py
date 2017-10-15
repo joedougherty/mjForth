@@ -179,23 +179,23 @@ def handle_term(term, input_list_ref):
         Data.push(TRUE)
     elif term == 'false':
         Data.push(FALSE)
-    elif term == ':': # Function definition
+    elif term == ':':           # Word definition
         define_word(input_list_ref)
-    elif term == '?DO': # Execute DO loop
+    elif term == '?DO':         # Execute DO loop
         doloop_body = takewhile_and_pop('LOOP', input_list_ref)
         run_doloop(doloop_body)
-    elif term == 'BEGIN': # Execute WHILE loop
+    elif term == 'BEGIN':       # Execute WHILE loop
         whileloop_body = takewhile_and_pop('REPEAT', input_list_ref)
         run_whileloop(whileloop_body)
-    elif term in Words: # Function call
+    elif term in Words:         # Word call
         call_word(term, input_list_ref)
-    elif term == 'see': # Function documentation
+    elif term == 'see':         # Function documentation
         show_definition(input_list_ref.pop())
-    elif term == 'IF':
+    elif term == 'IF':          # Conditional
         parse_conditional(input_list_ref)
-    elif term == 'variable':
+    elif term == 'variable':    # Variable declaration
         Memory[input_list_ref.pop(0)] = None
-    elif term in Memory:
+    elif term in Memory:        # Variable 
         set_or_get_variable(term, input_list_ref) 
     else:
         print("I don't know what to do with `{}` !!!".format(term))

@@ -44,3 +44,5 @@ Types of input to deal with:
         * User-defined words
         * conditional (IF ... ENDIF / IF ... ELSE .. ENDIF )
 
+(Substitution Model)[https://mitpress.mit.edu/sicp/full-text/sicp/book/node10.html]
+

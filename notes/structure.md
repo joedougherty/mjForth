@@ -28,21 +28,21 @@ Input Types Routing:
 
 Types of input to deal with:
     
-    * Terminating Branches:
+* Terminating Branches:
 
-        * literals (ints, true, false)
-        * Built-in words
-        * word definition
-        * see
-        * variable declaration (in globally-accessible Memory)
-        * variable store/fetch 
+    * literals (ints, true, false)
+    * Built-in words
+    * word definition
+    * see
+    * variable declaration (in globally-accessible Memory)
+    * variable store/fetch 
 
-    * Non-terminating Branches:
-    
-        * do loop
-        * while loop
-        * User-defined words
-        * conditional (IF ... ENDIF / IF ... ELSE .. ENDIF )
+* Non-terminating Branches:
 
-(Substitution Model)[https://mitpress.mit.edu/sicp/full-text/sicp/book/node10.html]
+    * do loop
+    * while loop
+    * User-defined words
+    * conditional (IF ... ENDIF / IF ... ELSE .. ENDIF )
+
+[Substitution Model](https://mitpress.mit.edu/sicp/full-text/sicp/book/node10.html)
 

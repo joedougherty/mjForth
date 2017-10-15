@@ -101,7 +101,7 @@ def show_definition(word):
 def call_word(term, input_list_ref):
     if isinstance(Words[term]['fn'], list):
         fn_list = copy(Words[term]['fn'])
-        consume_tokens(fn_list)
+        eval(fn_list)
     elif callable(Words[term]['fn']):
         try:
             Words[term]['fn']()
@@ -128,7 +128,7 @@ def run_doloop(word_list):
     _from, _to = Data.pop(), Data.pop()
     for i in range(_from, _to):
         input_list = resolve_iterator(i, copy(word_list))
-        consume_tokens(input_list)
+        eval(input_list)
    
 
 # https://www.complang.tuwien.ac.at/forth/gforth/Docs-html/Simple-Loops.html#Simple-Loops
@@ -138,9 +138,9 @@ def run_whileloop(while_loop_body):
         
     flag_value = TRUE
     while flag_value == TRUE:
-        consume_tokens(copy(code1_and_flag))
+        eval(copy(code1_and_flag))
         if Data.pop() == TRUE:
-            consume_tokens(copy(code2))
+            eval(copy(code2))
         else:
             flag_value = FALSE
 
@@ -150,14 +150,14 @@ def parse_conditional(input_list_ref):
     if not 'ELSE' in cond_body:
         # This is a simple statement. No ELSE to contend with.
         if Data.pop() == TRUE:
-            consume_tokens(cond_body)
+            eval(cond_body)
     else:
         iftrue = takewhile_and_pop('ELSE', cond_body)
         otherwise = cond_body
         if Data.pop() == TRUE:
-            consume_tokens(iftrue)
+            eval(iftrue)
         else:
-            consume_tokens(otherwise)
+            eval(otherwise)
 
 
 def set_or_get_variable(term, input_list_ref):
@@ -170,7 +170,7 @@ def set_or_get_variable(term, input_list_ref):
         print("Was trying to set variable given by '{}' but something went awfully awry!")
 
 
-def handle_term(term, input_list_ref):
+def apply(term, input_list_ref):
     if term == '':
         return True
     if term.isnumeric():
@@ -201,6 +201,12 @@ def handle_term(term, input_list_ref):
         print("I don't know what to do with `{}` !!!".format(term))
 
 
+def eval(input_list):
+    while input_list:
+        term = input_list.pop(0)
+        apply(term, input_list)
+
+
 def tokenize(input_line):
     return input_line.strip().  \
            replace('(', '( ').  \
@@ -209,18 +215,12 @@ def tokenize(input_line):
            split(' ')
 
 
-def consume_tokens(input_list):
-    while input_list:
-        term = input_list.pop(0)
-        handle_term(term, input_list)
-
-
 def main():
     welcome()
 
     while True:
         try:
-            consume_tokens(tokenize(input('mjF> ')))
+            eval(tokenize(input('mjF> ')))
         except KeyboardInterrupt:
             print('')
         except EOFError:
@@ -233,7 +233,7 @@ def execute_file(abs_path_to_file):
         lines = [l.strip() for l in f.readlines()]
 
     for line in lines:
-        consume_tokens(tokenize(line))
+        eval(tokenize(line))
 
 
 if __name__ == '__main__':

@@ -22,6 +22,7 @@ An experimental Forth interpreter. Seeks to emulate a subset of [gforth](https:/
 * 0=
 * 1-
 * 1+
+* =
 * &lt;
 * &gt;
 

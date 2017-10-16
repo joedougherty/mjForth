@@ -25,6 +25,10 @@ An experimental Forth interpreter. Seeks to emulate a subset of [gforth](https:/
 * =
 * &lt;
 * &gt;
+* negate
+* abs
+* min
+* max
 
 ### Colon Definitions ###
 

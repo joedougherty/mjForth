@@ -13,6 +13,7 @@ Data = Stack()
 Return = Stack()
 Memory = dict()
 
+
 def clear():
     Data.contents.clear()
 
@@ -150,34 +151,58 @@ def showmem():
             print('{}: {}'.format(k, v))
 
 
+def negate():
+    """ n -- -n """
+    Data.push(Data.pop() * -1)
+
+
+def _abs():
+    """  n -- |n| """
+    Data.push(abs(Data.pop()))
+
+
+def _min():
+    """ n1 n2 -- n-min """
+    Data.push(min([Data.pop(), Data.pop()]))
+    
+
+def _max():
+    """ n1 n2 -- n-max """
+    Data.push(max([Data.pop(), Data.pop()]))
+
+
 def wordify(word_as_fn):
     return {'doc': word_as_fn.__doc__, 'fn': word_as_fn}
 
 
-Words =  {'exit'      : {'doc': 'Exits the session.', 'fn': sys.exit},
-        '+'         : wordify(add),
-        '-'         : wordify(subtract),
-        '*'         : wordify(multiply),
-        '/'         : wordify(divide),
-        'mod'       : wordify(mod),
-        'drop'      : wordify(drop),
-        'swap'      : wordify(swap),
-        'dup'       : wordify(dup),
-        'over'      : wordify(over),
-        'rot'       : wordify(rot),
-        'nip'       : wordify(nip),
-        'tuck'      : wordify(tuck),
-        '.'         : wordify(dot),
-        '.s'        : wordify(dot_s),
-        'words'     : wordify(words),
-        'clear'     : wordify(clear),
-        '0='        : wordify(equals_zero),
-        '='         : wordify(equals),
-        '>'         : wordify(greaterthan),
-        '<'         : wordify(lessthan),
-        '1-'        : wordify(minusone),
-        '1+'        : wordify(plusone),
-        'showmem'   : wordify(showmem)}
+Words = {'exit'      : {'doc': 'Exits the session.', 'fn': sys.exit},
+         '+'         : wordify(add),
+         '-'         : wordify(subtract),
+         '*'         : wordify(multiply),
+         '/'         : wordify(divide),
+         'mod'       : wordify(mod),
+         'drop'      : wordify(drop),
+         'swap'      : wordify(swap),
+         'dup'       : wordify(dup),
+         'over'      : wordify(over),
+         'rot'       : wordify(rot),
+         'nip'       : wordify(nip),
+         'tuck'      : wordify(tuck),
+         '.'         : wordify(dot),
+         '.s'        : wordify(dot_s),
+         'words'     : wordify(words),
+         'clear'     : wordify(clear),
+         '0='        : wordify(equals_zero),
+         '='         : wordify(equals),
+         '>'         : wordify(greaterthan),
+         '<'         : wordify(lessthan),
+         '1-'        : wordify(minusone),
+         '1+'        : wordify(plusone),
+         'showmem'   : wordify(showmem),
+         'negate'    : wordify(negate),
+         'abs'       : wordify(_abs),
+         'min'       : wordify(_min),
+         'max'       : wordify(_max)}
 
 # Aliases
 Words['add'] = Words['+']

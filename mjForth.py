@@ -13,7 +13,7 @@ import sys
 __version__ = '0.0.2'
 
 
-RESERVED = ('?DO', 'i', 'LOOP', '', ' ', 'IF', 'ELSE', 'ENDIF', 
+RESERVED = ('?DO', 'i', 'LOOP', '', ' ', 'IF', 'ELSE', 'ENDIF',
             'true', 'false', 'BEGIN', 'WHILE', 'REPEAT', '!', '@')
 
 
@@ -129,13 +129,13 @@ def run_doloop(word_list):
     for i in range(_from, _to):
         input_list = resolve_iterator(i, copy(word_list))
         consume_tokens(input_list)
-   
+
 
 # https://www.complang.tuwien.ac.at/forth/gforth/Docs-html/Simple-Loops.html#Simple-Loops
 def run_whileloop(while_loop_body):
     code1_and_flag = takewhile_and_pop('WHILE', while_loop_body)
     code2 = while_loop_body
-        
+
     flag_value = TRUE
     while flag_value == TRUE:
         consume_tokens(copy(code1_and_flag))
@@ -190,13 +190,13 @@ def handle_term(term, input_list_ref):
     elif term in Words:         # Word call
         call_word(term, input_list_ref)
     elif term == 'see':         # Function documentation
-        show_definition(input_list_ref.pop())
+        show_definition(input_list_ref.pop(0))
     elif term == 'IF':          # Conditional
         parse_conditional(input_list_ref)
     elif term == 'variable':    # Variable declaration
         Memory[input_list_ref.pop(0)] = None
-    elif term in Memory:        # Variable 
-        set_or_get_variable(term, input_list_ref) 
+    elif term in Memory:        # Variable
+        set_or_get_variable(term, input_list_ref)
     else:
         print("I don't know what to do with `{}` !!!".format(term))
 

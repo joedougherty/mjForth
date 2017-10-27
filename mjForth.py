@@ -45,8 +45,8 @@ def takewhile_and_pop(match_token, list_of_tokens):
 def must_be_defined(word):
     return (word not in Words
         and word not in Memory
-        and not word.isnumeric()
-        and word not in RESERVED)
+        and word not in RESERVED
+        and not is_a_literal(word))
 
 
 def define_word(input_list_ref):
@@ -170,15 +170,39 @@ def set_or_get_variable(term, input_list_ref):
         print("Was trying to set variable given by '{}' but something went awfully awry!")
 
 
-def handle_term(term, input_list_ref):
-    if term == '':
+def is_a_literal(term):
+    if is_a_number(term) or term in ('true', 'false'):
         return True
-    if term.isnumeric():
+    return False
+
+
+def is_a_number(term):
+    try:
+        int(term)
+        return True
+    except ValueError:
+        try:
+            float(term)
+            return True
+        except ValueError:
+            return False
+        return False
+
+
+def handle_literal(term):
+    if is_a_number(term):
         Data.push(int(term))
     elif term == 'true':
         Data.push(TRUE)
     elif term == 'false':
         Data.push(FALSE)
+
+
+def handle_term(term, input_list_ref):
+    if term == '':
+        return True
+    elif is_a_literal(term):      # Literals
+        handle_literal(term)
     elif term == ':':           # Word definition
         define_word(input_list_ref)
     elif term == '?DO':         # Execute DO loop
@@ -221,6 +245,7 @@ def main():
     while True:
         try:
             consume_tokens(tokenize(input('mjF> ')))
+            print('ok')
         except KeyboardInterrupt:
             print('')
         except EOFError:

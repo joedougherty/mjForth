@@ -189,9 +189,19 @@ def is_a_number(term):
         return False
 
 
+def parse_num(num):
+    try:
+        return int(num)
+    except ValueError:
+        try:
+            return float(num)
+        except:
+            raise ValueError("I do not know how to handle {}!".format(num))
+
+
 def handle_literal(term):
     if is_a_number(term):
-        Data.push(int(term))
+        Data.push(parse_num(term))
     elif term == 'true':
         Data.push(TRUE)
     elif term == 'false':
@@ -199,9 +209,7 @@ def handle_literal(term):
 
 
 def handle_term(term, input_list_ref):
-    if term == '':
-        return True
-    elif is_a_literal(term):      # Literals
+    if is_a_literal(term):      # Push literals
         handle_literal(term)
     elif term == ':':           # Word definition
         define_word(input_list_ref)
@@ -226,11 +234,13 @@ def handle_term(term, input_list_ref):
 
 
 def tokenize(input_line):
-    return input_line.strip().  \
+    input_line = input_line.strip().  \
            replace('(', '( ').  \
            replace(')', ' )').  \
            replace(';', ' ; '). \
            split(' ')
+    
+    return [w for w in input_line if w != '']
 
 
 def consume_tokens(input_list):

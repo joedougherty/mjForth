@@ -1,0 +1,28 @@
+TITLE SLIDE
+===========
+<silence is golden>
+
+SLIDE 1 (Motivating Question)
+=======
+Has this ever happened to you? (Infomercial Voice)
+
+SLIDE 2 (Um...pardon?)
+=======
+
+You start doing some searching and run across these arcane-looking terms you haven't seen before
+
+THERE'S GOT TO BE A BETTER WAY.
+
+SLIDE 3 (Why Forth?)
+=======
+
+SLIDE 4  (What is there?)
+=======
+
+SLIDE 5 (The Stack)
+======= 
+
+SLIDE 6 (Words)
+=======
+
+

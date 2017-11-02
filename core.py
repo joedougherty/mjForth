@@ -143,6 +143,14 @@ def plusone():
     Data.push(Data.pop() + 1)
 
 
+def greater_than_zero():
+    """ Is top val greater than zero? """
+    if Data.pop() > 0:
+        Data.push(TRUE)
+    else:
+        Data.push(FALSE)
+
+
 def showmem():
     if Memory == dict():
         print('No global variables defined!')
@@ -193,6 +201,7 @@ Words = {'exit'      : {'doc': 'Exits the session.', 'fn': sys.exit},
          'words'     : wordify(words),
          'clear'     : wordify(clear),
          '0='        : wordify(equals_zero),
+         '0>'        : wordify(greater_than_zero),
          '='         : wordify(equals),
          '>'         : wordify(greaterthan),
          '<'         : wordify(lessthan),

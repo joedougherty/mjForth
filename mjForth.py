@@ -72,7 +72,7 @@ def define_word(input_list_ref):
     body = takewhile_and_pop(';', input_list_ref)
 
     for word in body:
-        if must_be_defined(word):
+        if must_be_defined(word) and word != name:
             print("You must define `{}` before invoking it!!!".format(word))
             input_list_ref.clear()
             return False

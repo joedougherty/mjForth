@@ -20,6 +20,7 @@ An experimental Forth interpreter. Seeks to emulate a subset of [gforth](https:/
 * /
 * mod
 * 0=
+* 0>
 * 1-
 * 1+
 * =

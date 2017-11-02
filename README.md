@@ -58,6 +58,10 @@ Use `see` to view the definition of a word.
 
 `BEGIN ... WHILE ... REPEAT`
 
+### Recursion ###
+
+`: fac_rec ( n -- n! ) dup 0> IF dup 1- fac_rec * ELSE drop 1 ENDIF ;`
+
 ### Global Variables (Memory) ###
 
 Declare a variable.

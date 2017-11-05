@@ -79,7 +79,13 @@ Get its value and push on top of the data stack.
 ### Combinators ###
 
 * i (unquote)
+* concat (combine two quoted programs)
+* dip
+
+(More on combinators [here](http://www.kevinalbrecht.com/code/joy-mirror/j06prg.html))
 
 ## Notes ##
 
 [\*] Must be used with the context of a colon definition.
+
+

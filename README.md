@@ -12,7 +12,7 @@ An experimental Forth interpreter. Seeks to emulate a subset of [gforth](https:/
 * nip 
 * tuck
 
-### Integer Math ###
+### Integer/Float Math ###
     
 * \+
 * \-

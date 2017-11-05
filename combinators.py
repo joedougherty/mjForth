@@ -28,5 +28,16 @@ def concat():
     Data.push(combined_list)
 
 
-Words['i'] = wordify(unquote)
+def dip():
+    """ 
+    Pop two quoted programs off the stack [A] and [B]. 
+    Execute A, put [B] back on the stack. 
+    """
+    A, B = Data.pop(), Data.pop()
+    consume_tokens(tokenize(_strip_quotes(A)))
+    Data.push(B)
+
+
+Words['i']      = wordify(unquote)
 Words['concat'] = wordify(concat)
+Words['dip']    = wordify(dip) 

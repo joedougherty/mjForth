@@ -17,7 +17,7 @@ __version__ = '0.0.2'
 
 
 RESERVED = ('?DO', 'i', 'LOOP', '', ' ', 'IF', 'ELSE', 'ENDIF',
-            'true', 'false', 'BEGIN', 'WHILE', 'REPEAT', '!', '@')
+            'true', 'false', 'BEGIN', 'WHILE', 'REPEAT', '!', '@', ']', '[')
 
 
 def welcome():

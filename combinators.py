@@ -6,6 +6,9 @@ from mjForth import consume_tokens, tokenize
 
 
 def _strip_quotes(quoted_str, outer_only=True):
+    if not isinstance(quoted_str, str) and not isinstance(quoted_str, bytes):
+        return quoted_str
+
     if outer_only:
         if quoted_str.startswith('['):
             quoted_str = quoted_str[1:]
@@ -34,7 +37,8 @@ def concat():
 def cons():
     """ [ B ] [ A ] cons => [ [ B ] A ] """
     A, B = Data.pop(), Data.pop()
-    Data.push('[ {} {} ]'.format(B, _strip_quotes(A))) 
+    list_rep = '[ {} {} ]'.format(B, _strip_quotes(A)).replace('  ', ' ')
+    Data.push(list_rep)
 
 
 def dip():

@@ -2,6 +2,8 @@
 
 # -*- coding: utf-8 -*-
 
+
+import combinators
 from core import Data, Return, TRUE, FALSE, Memory, Words
 
 from copy import copy, deepcopy
@@ -9,6 +11,7 @@ from itertools import takewhile
 import os
 import readline
 import sys
+
 
 __version__ = '0.0.2'
 
@@ -213,6 +216,9 @@ def handle_term(term, input_list_ref):
         handle_literal(term)
     elif term == ':':           # Word definition
         define_word(input_list_ref)
+    elif term == '[':           # Quoting
+        quote_body = takewhile_and_pop(']', input_list_ref)
+        Data.push('[ {} ]'.format(' '.join(quote_body)))
     elif term == '?DO':         # Execute DO loop
         doloop_body = takewhile_and_pop('LOOP', input_list_ref)
         run_doloop(doloop_body)

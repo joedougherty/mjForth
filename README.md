@@ -76,6 +76,10 @@ Get its value and push on top of the data stack.
 
 `v @`
 
+### Combinators ###
+
+* i (unquote)
+
 ## Notes ##
 
 [\*] Must be used with the context of a colon definition.

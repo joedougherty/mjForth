@@ -78,9 +78,11 @@ Get its value and push on top of the data stack.
 
 ### Combinators ###
 
-* i (unquote)
-* concat (combine two quoted programs)
-* dip
+* i         (unquote)
+* concat    (combine two quoted programs)
+* dip       ( [ 1 2 ] [ 3 4 ] dip => 3 4 [ 1 2 ] )
+* cons      ( [ 1 2 ] [ 3 4 ] cons => [ [ 1 2 ] 3 4 ]
+* unit      ( [ 1 2 3 ] unit => [ [ 1 2 3 ] ] )
 
 (More on combinators [here](http://www.kevinalbrecht.com/code/joy-mirror/j06prg.html))
 

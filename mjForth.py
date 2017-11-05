@@ -111,7 +111,7 @@ def call_word(term, input_list_ref):
         except IndexError:
             print("Empty stack!!!")
     else:
-        print("I don't know what to do with `{}` !!!".format(term))
+        print("`{}` is not a word I know about!!!".format(term))
 
 
 def resolve_iterator(i, fn_body_as_word_list):
@@ -199,7 +199,7 @@ def parse_num(num):
         try:
             return float(num)
         except:
-            raise ValueError("I do not know how to handle {}!".format(num))
+            raise ValueError("I do not know how to convert {} into a numeric value!".format(num))
 
 
 def handle_literal(term):
@@ -211,14 +211,44 @@ def handle_literal(term):
         Data.push(FALSE)
 
 
+def _consume_list(input_list_ref, first_call=False):
+    if first_call:
+        token = '['
+    else:
+        token = input_list_ref.pop(0)
+
+    if '[' == token:
+        L = []
+        while input_list_ref[0] != ']':
+            L.append(_consume_list(input_list_ref))
+        input_list_ref.pop(0) # pop off ']'
+        return L
+    elif ']' == token:
+        raise SyntaxError('unexpected ]')
+    else:
+        if must_be_defined(token):
+            print('{} must be defined before it can be used!')
+        else:
+            return token
+
+
+def relistify(list_as_str):
+    s = str(list_as_str).replace(',','').replace("'",'')
+    s = s.replace('[','[ ').replace(']', ' ]')
+    return s
+
+
+def consume_list(input_list_ref):
+    Data.push(relistify(_consume_list(input_list_ref, first_call=True)))
+
+
 def handle_term(term, input_list_ref):
     if is_a_literal(term):      # Push literals
         handle_literal(term)
     elif term == ':':           # Word definition
         define_word(input_list_ref)
-    elif term == '[':           # Quoting
-        quote_body = takewhile_and_pop(']', input_list_ref)
-        Data.push('[ {} ]'.format(' '.join(quote_body)))
+    elif term == '[':           # Quoting (both flat and nested)
+        consume_list(input_list_ref)
     elif term == '?DO':         # Execute DO loop
         doloop_body = takewhile_and_pop('LOOP', input_list_ref)
         run_doloop(doloop_body)

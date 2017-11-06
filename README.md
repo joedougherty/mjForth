@@ -54,11 +54,11 @@ Use `see` to view the definition of a word.
 
 `10 1 ?DO i ... LOOP`
 
-### While Loops ###
+### While Loops [\*] ###
 
 `BEGIN ... WHILE ... REPEAT`
 
-### Recursion ###
+### Recursion [\*] ###
 
 `: fac_rec ( n -- n! ) dup 0> IF dup 1- fac_rec * ELSE drop 1 ENDIF ;`
 

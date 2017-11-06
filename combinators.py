@@ -57,8 +57,16 @@ def unit():
     Data.push('[ {} ]'.format(Data.pop()))
 
 
+def t():
+    """ [ B ] [ A ] => [ A ] B """
+    A, B = Data.pop(), Data.pop()
+    Data.push(A)
+    consume_tokens(tokenize(_strip_quotes(B)))
+
+
 Words['i']      = wordify(unquote)
 Words['concat'] = wordify(concat)
 Words['cons']   = wordify(cons)
 Words['dip']    = wordify(dip) 
 Words['unit']   = wordify(unit)
+Words['t']      = wordify(t)

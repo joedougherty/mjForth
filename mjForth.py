@@ -4,16 +4,20 @@
 
 
 import combinators
-from core import Data, Return, TRUE, FALSE, Memory, Words
+from core import Data, TRUE, FALSE, Memory, Words
 
-from copy import copy, deepcopy
+from copy import copy
 from itertools import takewhile
 import os
 import readline
 import sys
 
+from prompt_toolkit import prompt
+from prompt_toolkit.history import InMemoryHistory
+from prompt_toolkit.contrib.completers import WordCompleter
 
-__version__ = '0.0.2'
+
+__version__ = '0.0.3'
 
 
 RESERVED = ('?DO', 'i', 'LOOP', '', ' ', 'IF', 'ELSE', 'ENDIF',
@@ -41,15 +45,15 @@ def takewhile_and_pop(match_token, list_of_tokens):
     tw = [i for i in takewhile(lambda t: t != match_token, list_of_tokens)]
     for found_item in tw:
         list_of_tokens.pop(0)
-    list_of_tokens.pop(0) # Remove matching character
+    list_of_tokens.pop(0)  # Remove matching character
     return tw
 
 
 def must_be_defined(word):
-    return (word not in Words
-        and word not in Memory
-        and word not in RESERVED
-        and not is_a_literal(word))
+    return (word not in Words and
+            word not in Memory and
+            word not in RESERVED and
+            not is_a_literal(word))
 
 
 def define_word(input_list_ref):
@@ -66,7 +70,7 @@ def define_word(input_list_ref):
     """
     name = input_list_ref.pop(0)
     if input_list_ref[0] == '(':
-        input_list_ref.pop(0) # Pop (
+        input_list_ref.pop(0)  # Pop (
         comment = takewhile_and_pop(')', input_list_ref)
     else:
         print("Name must be followed by paren docs! Was trying to define: '{}'".format(name))
@@ -96,9 +100,10 @@ def show_definition(word):
     if isinstance(Words[word]['doc'], str):
         print('({})'.format(Words[word]['doc']))
     if callable(Words[word]['fn']):
-        print('  ' + Words[word]['fn'].__name__)
+        print('  ' + Words[word]['fn'].__name__ + ' [built-in]')
     if isinstance(Words[word]['fn'], list):
         print('  ' + ' '.join([str(i) for i in Words[word]['fn']]))
+        print(' : {} ( {} ) {} ; '.format(word, ' '.join(Words[word]['doc']), ' '.join([str(i) for i in Words[word]['fn']])))
 
 
 def call_word(term, input_list_ref):
@@ -150,7 +155,7 @@ def run_whileloop(while_loop_body):
 
 def parse_conditional(input_list_ref):
     cond_body = takewhile_and_pop('ENDIF', input_list_ref)
-    if not 'ELSE' in cond_body:
+    if 'ELSE' not in cond_body:
         # This is a simple statement. No ELSE to contend with.
         if Data.pop() == TRUE:
             consume_tokens(cond_body)
@@ -221,7 +226,7 @@ def _consume_list(input_list_ref, first_call=False):
         L = []
         while input_list_ref[0] != ']':
             L.append(_consume_list(input_list_ref))
-        input_list_ref.pop(0) # pop off ']'
+        input_list_ref.pop(0)  # pop off ']'
         return L
     elif ']' == token:
         raise SyntaxError('unexpected ]')
@@ -233,8 +238,8 @@ def _consume_list(input_list_ref, first_call=False):
 
 
 def relistify(list_as_str):
-    s = str(list_as_str).replace(',','').replace("'",'')
-    s = s.replace('[','[ ').replace(']', ' ]')
+    s = str(list_as_str).replace(',', '').replace("'", '')
+    s = s.replace('[', '[ ').replace(']', ' ]')
     return s
 
 
@@ -285,12 +290,18 @@ def consume_tokens(input_list):
         handle_term(term, input_list)
 
 
+def read_dictionary():
+    return WordCompleter(list(Words.keys()) + ['see'])
+
+
 def main():
     welcome()
 
+    history = InMemoryHistory()
+
     while True:
         try:
-            consume_tokens(tokenize(input('mjF> ')))
+            consume_tokens(tokenize(prompt('mjF> ', history=history, completer=read_dictionary())))
             print('ok')
         except KeyboardInterrupt:
             print('')

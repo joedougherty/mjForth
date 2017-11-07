@@ -15,6 +15,7 @@ Memory = dict()
 
 
 def clear():
+    """ Empty the (data/parameter) stack! """
     Data.contents.clear()
 
 
@@ -29,8 +30,7 @@ def swap():
 
 
 def dup():
-    topcopy = Data.peek()
-    Data.push(topcopy)
+    Data.push(copy(Data.peek()))
 
 
 def over():

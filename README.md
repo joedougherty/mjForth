@@ -1,6 +1,6 @@
 ## mjForth ##
 
-An experimental REPL/interpreter. Seeks to emulate a subset of [gforth](https://www.gnu.org/software/gforth/). Also includes some functional programming ideas inspired by [Joy](https://en.wikipedia.org/wiki/Joy_(programming_language).
+An experimental REPL/interpreter. Seeks to emulate a subset of [gforth](https://www.gnu.org/software/gforth/). Also includes some functional programming ideas inspired by [Joy](https://en.wikipedia.org/wiki/Joy_(programming_language)).
 
 ### Stack Manipulations ###
 

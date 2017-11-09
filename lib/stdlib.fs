@@ -1,1 +1,2 @@
-: range ( Generate a list of ints starting at 0 ) ?DO i 0= IF [ 0 ] ELSE i concat ENDIF LOOP ;
+: range ( Generate a list of ints ) [ ] ?DO i concat LOOP ;
+: square ( Multiply a number by itself ) dup * ;

@@ -1,6 +1,6 @@
 ## mjForth ##
 
-An experimental REPL/interpreter. Seeks to emulate a subset of [gforth](https://www.gnu.org/software/gforth/). Also includes some functional programming ideas inspired by [Joy](http://www.kevinalbrecht.com/code/joy-mirror/synops.html)).
+An experimental REPL/interpreter. Seeks to emulate a subset of [gforth](https://www.gnu.org/software/gforth/). Also includes some functional programming ideas inspired by [Joy](http://www.kevinalbrecht.com/code/joy-mirror/synops.html).
 
 ### Stack Manipulations ###
 

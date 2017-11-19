@@ -20,7 +20,7 @@ from prompt_toolkit.contrib.completers import WordCompleter
 __version__ = '0.0.3'
 
 
-RESERVED = ('?DO', 'i', 'LOOP', '', ' ', 'IF', 'ELSE', 'ENDIF',
+RESERVED = ('?DO', 'i', 'LOOP', '', ' ', 'IF', 'ELSE', 'ENDIF', 'variable',
             'true', 'false', 'BEGIN', 'WHILE', 'REPEAT', '!', '@', ']', '[')
 
 
@@ -263,11 +263,17 @@ def handle_term(term, input_list_ref):
     elif term in Words:         # Word call
         call_word(term, input_list_ref)
     elif term == 'see':         # Function documentation
-        show_definition(input_list_ref.pop(0))
+        try:
+            show_definition(input_list_ref.pop(0))
+        except IndexError:
+            print('Missing word. Ex: `see +`')
     elif term == 'IF':          # Conditional
         parse_conditional(input_list_ref)
     elif term == 'variable':    # Variable declaration
-        Memory[input_list_ref.pop(0)] = None
+        try:
+            Memory[input_list_ref.pop(0)] = None
+        except IndexError:
+            print('Missing variable name. Ex: `variable foo`')
     elif term in Memory:        # Variable
         set_or_get_variable(term, input_list_ref)
     else:
@@ -291,7 +297,7 @@ def consume_tokens(input_list):
 
 
 def read_dictionary():
-    return WordCompleter(list(Words.keys()) + ['see'])
+    return WordCompleter(list(Words.keys()) + ['see', 'variable'])
 
 
 def main():

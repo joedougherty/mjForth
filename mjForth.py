@@ -17,7 +17,7 @@ from prompt_toolkit.history import InMemoryHistory
 from prompt_toolkit.contrib.completers import WordCompleter
 
 
-__version__ = '0.0.3'
+__version__ = '0.0.4'
 
 
 RESERVED = ('?DO', 'i', 'LOOP', '', ' ', 'IF', 'ELSE', 'ENDIF', 'variable',
@@ -25,9 +25,7 @@ RESERVED = ('?DO', 'i', 'LOOP', '', ' ', 'IF', 'ELSE', 'ENDIF', 'variable',
 
 
 def welcome():
-    msg = """mjForth {}, Copyright (C) 2017 Joe Dougherty.""".format(__version__)
-    msg += """\nType `exit` to quit.\n"""
-    print(msg)
+    print("""mjForth {}, Copyright (C) 2017 Joe Dougherty.""".format(__version__))
 
 
 def takewhile_and_pop(match_token, list_of_tokens):

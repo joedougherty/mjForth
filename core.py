@@ -172,7 +172,7 @@ def _abs():
 def _min():
     """ n1 n2 -- n-min """
     Data.push(min([Data.pop(), Data.pop()]))
-    
+
 
 def _max():
     """ n1 n2 -- n-max """
@@ -214,7 +214,8 @@ Words = {'exit'      : {'doc': 'Exits the session.', 'fn': sys.exit},
          'max'       : wordify(_max)}
 
 # Aliases
-Words['add'] = Words['+']
-Words['subtract'] = Words['-']
-Words['multiply'] = Words['*']
-Words['divide'] = Words['/']
+Words['add']        = Words['+']
+Words['subtract']   = Words['-']
+Words['multiply']   = Words['*']
+Words['divide']     = Words['/']
+Words['quit']       = Words['exit']

@@ -25,7 +25,7 @@ RESERVED = ('?DO', 'i', 'LOOP', '', ' ', 'IF', 'ELSE', 'ENDIF', 'variable',
 
 
 def welcome():
-    print("""mjForth {}, Copyright (C) 2017 Joe Dougherty.""".format(__version__))
+    print("""mjForth {}, Copyright (C) 2018 Joe Dougherty.""".format(__version__))
 
 
 def takewhile_and_pop(match_token, list_of_tokens):

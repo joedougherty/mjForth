@@ -5,6 +5,9 @@ import operator
 import sys
 
 
+from IPython import embed
+
+
 class StackUnderflowError(Exception):
     pass
 
@@ -259,6 +262,7 @@ Words = {
     "abs": wordify(_abs),
     "min": wordify(_min),
     "max": wordify(_max),
+    "^esc": {"doc": "IPython escape hatch.", "fn": embed}
 }
 
 # Aliases

@@ -42,9 +42,7 @@ RESERVED = (
 
 
 def welcome():
-    print(
-        ("""mjForth {}, Copyright (C) 2018-2020 Joe Dougherty.""".format(__version__))
-    )
+    print(f'''mjForth {__version__}, Copyright (C) 2018-2020 Joe Dougherty.''')
 
 
 def takewhile_and_pop(match_token, list_of_tokens):
@@ -56,13 +54,7 @@ def takewhile_and_pop(match_token, list_of_tokens):
     tokens from list_of_tokens.
     """
     if match_token not in list_of_tokens:
-        print(
-            (
-                "Expected to encounter '{}', but did not see it in list_of_tokens!".format(
-                    match_token
-                )
-            )
-        )
+        print(f'''Expected to encounter '{match_token}', but did not see it in list_of_tokens!''')
         return False
 
     tw = [i for i in takewhile(lambda t: t != match_token, list_of_tokens)]
@@ -98,64 +90,49 @@ def define_word(input_list_ref):
         input_list_ref.pop(0)  # Pop (
         comment = takewhile_and_pop(")", input_list_ref)
     else:
-        print(
-            (
-                "Name must be followed by paren docs! Was trying to define: '{}'".format(
-                    name
-                )
-            )
-        )
+        print(f'''Name must be followed by paren docs. Was trying to define: `{name}`.''')
         input_list_ref.clear()
         return False
     body = takewhile_and_pop(";", input_list_ref)
 
     for word in body:
         if must_be_defined(word) and word != name:
-            print(("You must define `{}` before invoking it!!!".format(word)))
+            print(f'''You must define `{word}` before invoking it!''')
             input_list_ref.clear()
             return False
 
     if name in Words:
-        print(("'{}' was redefined.".format(name)))
+        print(f'''`{name}` was redefined.''')
 
     Words[name] = {"doc": comment, "fn": body}
 
 
 def show_definition(word):
-    if word not in Words:
-        print(("{} has not been defined!".format(word)))
+    doc, fn = Words[word]["doc"], Words[word]["fn"]
+
+    if isinstance(doc, list):
+        doc = " ".join([str(i) for i in doc]) 
+    
+    if callable(fn):
+        print(f'''  {fn.__name__} [built-in]''')
+    elif isinstance(fn, list):
+        joined_fn = " ".join(fn)
+        print(f''': {word}\n  ( {doc} )\n  {joined_fn} ; ''')
+    else:
+        print(f'''{word} has not been defined!''')
         return False
 
-    if isinstance(Words[word]["doc"], list):
-        print(("({})".format(" ".join(Words[word]["doc"]))))
-    if isinstance(Words[word]["doc"], str):
-        print(("({})".format(Words[word]["doc"])))
-    if callable(Words[word]["fn"]):
-        print(("  " + Words[word]["fn"].__name__ + " [built-in]"))
-    if isinstance(Words[word]["fn"], list):
-        print(("  " + " ".join([str(i) for i in Words[word]["fn"]])))
-        print(
-            (
-                " : {} ( {} ) {} ; ".format(
-                    word,
-                    " ".join(Words[word]["doc"]),
-                    " ".join([str(i) for i in Words[word]["fn"]]),
-                )
-            )
-        )
 
+def call_word(word, input_list_ref):
+    fn = Words[word]["fn"]
 
-def call_word(term, input_list_ref):
-    if isinstance(Words[term]["fn"], list):
-        fn_list = copy(Words[term]["fn"])
-        consume_tokens(fn_list)
-    elif callable(Words[term]["fn"]):
-        try:
-            Words[term]["fn"]()
-        except IndexError:
-            print("Empty stack!!!")
+    if callable(fn):
+        fn()
+    elif isinstance(fn, list):
+        consume_tokens(copy(fn))
     else:
-        print(("`{}` is not a word I know about!!!".format(term)))
+        print(f'''{word} has not been defined!''')
+        return False
 
 
 def resolve_iterator(i, fn_body_as_word_list):
@@ -244,7 +221,7 @@ def parse_num(num):
             return float(num)
         except:
             raise ValueError(
-                "I do not know how to convert {} into a numeric value!".format(num)
+                f'''I do not know how to convert {num} into a numeric value!'''
             )
 
 
@@ -285,7 +262,7 @@ def handle_term(term, input_list_ref):
     elif term in Memory:  # Variable
         set_or_get_variable(term, input_list_ref)
     else:
-        print(("I don't know what to do with `{}` !!!".format(term)))
+        print(f'''I don't know what to do with `{term}` !!!''')
 
 
 def tokenize(input_line):
@@ -343,12 +320,12 @@ def execute_lines(lines):
         consume_tokens(tokenize(line))
     
 
-
 if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1]:
-        if os.path.exists(sys.argv[1]):
-            execute_file(sys.argv[1])
+        filename = sys.argv[1]
+        if os.path.exists(filename):
+            execute_file(filename)
         else:
-            print(("Could not find {}!".format(sys.argv[1])))
+            print(f'''{filename} does not exist!''')
             sys.exit(2)
     main()

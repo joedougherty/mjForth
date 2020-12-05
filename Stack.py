@@ -6,7 +6,9 @@ class Stack:
     def push(self, item):
         if self.height_limit:
             if (self.height() + 1) > self.height_limit:
-                msg = 'This Stack has a height_limit set to: {}'.format(self.height_limit)
+                msg = "This Stack has a height_limit set to: {}".format(
+                    self.height_limit
+                )
                 raise ValueError(msg)
         self.contents.append(item)
 

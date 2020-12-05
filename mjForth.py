@@ -17,15 +17,35 @@ from prompt_toolkit.history import InMemoryHistory
 from prompt_toolkit.completion import WordCompleter
 
 
-__version__ = '0.0.5'
+__version__ = "0.0.5"
 
 
-RESERVED = ('?DO', 'i', 'LOOP', '', ' ', 'IF', 'ELSE', 'ENDIF', 'variable',
-            'true', 'false', 'BEGIN', 'WHILE', 'REPEAT', '!', '@', ']', '[')
+RESERVED = (
+    "?DO",
+    "i",
+    "LOOP",
+    "",
+    " ",
+    "IF",
+    "ELSE",
+    "ENDIF",
+    "variable",
+    "true",
+    "false",
+    "BEGIN",
+    "WHILE",
+    "REPEAT",
+    "!",
+    "@",
+    "]",
+    "[",
+)
 
 
 def welcome():
-    print(("""mjForth {}, Copyright (C) 2018-2020 Joe Dougherty.""".format(__version__)))
+    print(
+        ("""mjForth {}, Copyright (C) 2018-2020 Joe Dougherty.""".format(__version__))
+    )
 
 
 def takewhile_and_pop(match_token, list_of_tokens):
@@ -37,7 +57,13 @@ def takewhile_and_pop(match_token, list_of_tokens):
     tokens from list_of_tokens.
     """
     if match_token not in list_of_tokens:
-        print(("Expected to encounter '{}', but did not see it in list_of_tokens!".format(match_token)))
+        print(
+            (
+                "Expected to encounter '{}', but did not see it in list_of_tokens!".format(
+                    match_token
+                )
+            )
+        )
         return False
 
     tw = [i for i in takewhile(lambda t: t != match_token, list_of_tokens)]
@@ -48,10 +74,12 @@ def takewhile_and_pop(match_token, list_of_tokens):
 
 
 def must_be_defined(word):
-    return (word not in Words and
-            word not in Memory and
-            word not in RESERVED and
-            not is_a_literal(word))
+    return (
+        word not in Words
+        and word not in Memory
+        and word not in RESERVED
+        and not is_a_literal(word)
+    )
 
 
 def define_word(input_list_ref):
@@ -67,14 +95,20 @@ def define_word(input_list_ref):
     word will added to the globally-accessible Words dict.
     """
     name = input_list_ref.pop(0)
-    if input_list_ref[0] == '(':
+    if input_list_ref[0] == "(":
         input_list_ref.pop(0)  # Pop (
-        comment = takewhile_and_pop(')', input_list_ref)
+        comment = takewhile_and_pop(")", input_list_ref)
     else:
-        print(("Name must be followed by paren docs! Was trying to define: '{}'".format(name)))
+        print(
+            (
+                "Name must be followed by paren docs! Was trying to define: '{}'".format(
+                    name
+                )
+            )
+        )
         input_list_ref.clear()
         return False
-    body = takewhile_and_pop(';', input_list_ref)
+    body = takewhile_and_pop(";", input_list_ref)
 
     for word in body:
         if must_be_defined(word) and word != name:
@@ -85,7 +119,7 @@ def define_word(input_list_ref):
     if name in Words:
         print(("'{}' was redefined.".format(name)))
 
-    Words[name] = {'doc': comment, 'fn': body}
+    Words[name] = {"doc": comment, "fn": body}
 
 
 def show_definition(word):
@@ -93,24 +127,32 @@ def show_definition(word):
         print(("{} has not been defined!".format(word)))
         return False
 
-    if isinstance(Words[word]['doc'], list):
-        print(('({})'.format(' '.join(Words[word]['doc']))))
-    if isinstance(Words[word]['doc'], str):
-        print(('({})'.format(Words[word]['doc'])))
-    if callable(Words[word]['fn']):
-        print(('  ' + Words[word]['fn'].__name__ + ' [built-in]'))
-    if isinstance(Words[word]['fn'], list):
-        print(('  ' + ' '.join([str(i) for i in Words[word]['fn']])))
-        print((' : {} ( {} ) {} ; '.format(word, ' '.join(Words[word]['doc']), ' '.join([str(i) for i in Words[word]['fn']]))))
+    if isinstance(Words[word]["doc"], list):
+        print(("({})".format(" ".join(Words[word]["doc"]))))
+    if isinstance(Words[word]["doc"], str):
+        print(("({})".format(Words[word]["doc"])))
+    if callable(Words[word]["fn"]):
+        print(("  " + Words[word]["fn"].__name__ + " [built-in]"))
+    if isinstance(Words[word]["fn"], list):
+        print(("  " + " ".join([str(i) for i in Words[word]["fn"]])))
+        print(
+            (
+                " : {} ( {} ) {} ; ".format(
+                    word,
+                    " ".join(Words[word]["doc"]),
+                    " ".join([str(i) for i in Words[word]["fn"]]),
+                )
+            )
+        )
 
 
 def call_word(term, input_list_ref):
-    if isinstance(Words[term]['fn'], list):
-        fn_list = copy(Words[term]['fn'])
+    if isinstance(Words[term]["fn"], list):
+        fn_list = copy(Words[term]["fn"])
         consume_tokens(fn_list)
-    elif callable(Words[term]['fn']):
+    elif callable(Words[term]["fn"]):
         try:
-            Words[term]['fn']()
+            Words[term]["fn"]()
         except IndexError:
             print("Empty stack!!!")
     else:
@@ -124,7 +166,7 @@ def resolve_iterator(i, fn_body_as_word_list):
     of the current iterator.
     """
     for idx, item in enumerate(fn_body_as_word_list):
-        if item == 'i':
+        if item == "i":
             fn_body_as_word_list[idx] = str(i)
 
     return fn_body_as_word_list
@@ -139,7 +181,7 @@ def run_doloop(word_list):
 
 # https://www.complang.tuwien.ac.at/forth/gforth/Docs-html/Simple-Loops.html#Simple-Loops
 def run_whileloop(while_loop_body):
-    code1_and_flag = takewhile_and_pop('WHILE', while_loop_body)
+    code1_and_flag = takewhile_and_pop("WHILE", while_loop_body)
     code2 = while_loop_body
 
     flag_value = TRUE
@@ -152,13 +194,13 @@ def run_whileloop(while_loop_body):
 
 
 def parse_conditional(input_list_ref):
-    cond_body = takewhile_and_pop('ENDIF', input_list_ref)
-    if 'ELSE' not in cond_body:
+    cond_body = takewhile_and_pop("ENDIF", input_list_ref)
+    if "ELSE" not in cond_body:
         # This is a simple statement. No ELSE to contend with.
         if Data.pop() == TRUE:
             consume_tokens(cond_body)
     else:
-        iftrue = takewhile_and_pop('ELSE', cond_body)
+        iftrue = takewhile_and_pop("ELSE", cond_body)
         otherwise = cond_body
         if Data.pop() == TRUE:
             consume_tokens(iftrue)
@@ -168,18 +210,18 @@ def parse_conditional(input_list_ref):
 
 def set_or_get_variable(term, input_list_ref):
     next_token = input_list_ref.pop(0)
-    if next_token == '!':
+    if next_token == "!":
         Memory[term] = Data.pop()
-    elif next_token == '@':
+    elif next_token == "@":
         Data.push(Memory[term])
     else:
-        print("Was trying to set variable given by '{}' but something went awfully awry!")
+        print(
+            "Was trying to set variable given by '{}' but something went awfully awry!"
+        )
 
 
 def is_a_literal(term):
-    if is_a_number(term) or term in ('true', 'false'):
-        return True
-    return False
+    return is_a_number(term) or term in ("true", "false")
 
 
 def is_a_number(term):
@@ -202,42 +244,44 @@ def parse_num(num):
         try:
             return float(num)
         except:
-            raise ValueError("I do not know how to convert {} into a numeric value!".format(num))
+            raise ValueError(
+                "I do not know how to convert {} into a numeric value!".format(num)
+            )
 
 
 def handle_literal(term):
     if is_a_number(term):
         Data.push(parse_num(term))
-    elif term == 'true':
+    elif term == "true":
         Data.push(TRUE)
-    elif term == 'false':
+    elif term == "false":
         Data.push(FALSE)
 
 
 def _consume_list(input_list_ref, first_call=False):
     if first_call:
-        token = '['
+        token = "["
     else:
         token = input_list_ref.pop(0)
 
-    if '[' == token:
+    if "[" == token:
         L = []
-        while input_list_ref[0] != ']':
+        while input_list_ref[0] != "]":
             L.append(_consume_list(input_list_ref))
         input_list_ref.pop(0)  # pop off ']'
         return L
-    elif ']' == token:
-        raise SyntaxError('unexpected ]')
+    elif "]" == token:
+        raise SyntaxError("unexpected ]")
     else:
         if must_be_defined(token):
-            print('{} must be defined before it can be used!')
+            print("{} must be defined before it can be used!")
         else:
             return token
 
 
 def relistify(list_as_str):
-    s = str(list_as_str).replace(',', '').replace("'", '')
-    s = s.replace('[', '[ ').replace(']', ' ]')
+    s = str(list_as_str).replace(",", "").replace("'", "")
+    s = s.replace("[", "[ ").replace("]", " ]")
     return s
 
 
@@ -246,46 +290,48 @@ def consume_list(input_list_ref):
 
 
 def handle_term(term, input_list_ref):
-    if is_a_literal(term):      # Push literals
+    if is_a_literal(term):  # Push literals
         handle_literal(term)
-    elif term == ':':           # Word definition
+    elif term == ":":  # Word definition
         define_word(input_list_ref)
-    elif term == '[':           # Quoting (both flat and nested)
+    elif term == "[":  # Quoting (both flat and nested)
         consume_list(input_list_ref)
-    elif term == '?DO':         # Execute DO loop
-        doloop_body = takewhile_and_pop('LOOP', input_list_ref)
+    elif term == "?DO":  # Execute DO loop
+        doloop_body = takewhile_and_pop("LOOP", input_list_ref)
         run_doloop(doloop_body)
-    elif term == 'BEGIN':       # Execute WHILE loop
-        whileloop_body = takewhile_and_pop('REPEAT', input_list_ref)
+    elif term == "BEGIN":  # Execute WHILE loop
+        whileloop_body = takewhile_and_pop("REPEAT", input_list_ref)
         run_whileloop(whileloop_body)
-    elif term in Words:         # Word call
+    elif term in Words:  # Word call
         call_word(term, input_list_ref)
-    elif term == 'see':         # Function documentation
+    elif term == "see":  # Function documentation
         try:
             show_definition(input_list_ref.pop(0))
         except IndexError:
-            print('Missing word. Ex: `see +`')
-    elif term == 'IF':          # Conditional
+            print("Missing word. Ex: `see +`")
+    elif term == "IF":  # Conditional
         parse_conditional(input_list_ref)
-    elif term == 'variable':    # Variable declaration
+    elif term == "variable":  # Variable declaration
         try:
             Memory[input_list_ref.pop(0)] = None
         except IndexError:
-            print('Missing variable name. Ex: `variable foo`')
-    elif term in Memory:        # Variable
+            print("Missing variable name. Ex: `variable foo`")
+    elif term in Memory:  # Variable
         set_or_get_variable(term, input_list_ref)
     else:
         print(("I don't know what to do with `{}` !!!".format(term)))
 
 
 def tokenize(input_line):
-    input_line = input_line.strip().  \
-           replace('(', '( ').  \
-           replace(')', ' )').  \
-           replace(';', ' ; '). \
-           split(' ')
+    input_line = (
+        input_line.strip()
+        .replace("(", "( ")
+        .replace(")", " )")
+        .replace(";", " ; ")
+        .split(" ")
+    )
 
-    return [w for w in input_line if w != '']
+    return [w for w in input_line if w != ""]
 
 
 def consume_tokens(input_list):
@@ -295,7 +341,7 @@ def consume_tokens(input_list):
 
 
 def read_dictionary():
-    return WordCompleter(list(Words.keys()) + ['see', 'variable'])
+    return WordCompleter(list(Words.keys()) + ["see", "variable"])
 
 
 def main():
@@ -305,24 +351,26 @@ def main():
 
     while True:
         try:
-            consume_tokens(tokenize(prompt('mjF> ', history=history, completer=read_dictionary())))
-            print('ok')
+            consume_tokens(
+                tokenize(prompt("mjF> ", history=history, completer=read_dictionary()))
+            )
+            print("ok")
         except KeyboardInterrupt:
-            print('')
+            print("")
         except EOFError:
-            print('')
+            print("")
             sys.exit(0)
 
 
 def execute_file(abs_path_to_file):
-    with open(abs_path_to_file, 'r') as f:
+    with open(abs_path_to_file, "r") as f:
         lines = [l.strip() for l in f.readlines()]
 
     for line in lines:
         consume_tokens(tokenize(line))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1]:
         if os.path.exists(sys.argv[1]):
             execute_file(sys.argv[1])

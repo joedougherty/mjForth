@@ -71,13 +71,13 @@ def multiply():
 def divide():
     """ This is a custom `divide` implementation. """
     a, b = Data.pop(), Data.pop()
-    Data.push(int(b / (a*1.0)))
+    Data.push(int(b / (a * 1.0)))
 
 
 def mod():
     """ Custom mod. """
     a, b = Data.pop(), Data.pop()
-    Data.push(operator.mod(b,a))
+    Data.push(operator.mod(b, a))
 
 
 def equals():
@@ -104,14 +104,14 @@ def dot():
 
 def dot_s():
     """ Print stack and stack height. """
-    print(("<{}> {}".format(Data.height(), ' '.join([str(i) for i in Data.contents]))))
+    print(("<{}> {}".format(Data.height(), " ".join([str(i) for i in Data.contents]))))
 
 
 def words():
     """ List the known words. """
-    word_list = ''
+    word_list = ""
     for word in Words:
-        word_list += word + ' '
+        word_list += word + " "
     print(word_list)
 
 
@@ -153,10 +153,10 @@ def greater_than_zero():
 
 def showmem():
     if Memory == dict():
-        print('No global variables defined!')
+        print("No global variables defined!")
     else:
         for k, v in list(Memory.items()):
-            print(('{}: {}'.format(k, v)))
+            print(("{}: {}".format(k, v)))
 
 
 def negate():
@@ -180,42 +180,44 @@ def _max():
 
 
 def wordify(word_as_fn):
-    return {'doc': word_as_fn.__doc__, 'fn': word_as_fn}
+    return {"doc": word_as_fn.__doc__, "fn": word_as_fn}
 
 
-Words = {'exit'      : {'doc': 'Exits the session.', 'fn': sys.exit},
-         '+'         : wordify(add),
-         '-'         : wordify(subtract),
-         '*'         : wordify(multiply),
-         '/'         : wordify(divide),
-         'mod'       : wordify(mod),
-         'drop'      : wordify(drop),
-         'swap'      : wordify(swap),
-         'dup'       : wordify(dup),
-         'over'      : wordify(over),
-         'rot'       : wordify(rot),
-         'nip'       : wordify(nip),
-         'tuck'      : wordify(tuck),
-         '.'         : wordify(dot),
-         '.s'        : wordify(dot_s),
-         'words'     : wordify(words),
-         'clear'     : wordify(clear),
-         '0='        : wordify(equals_zero),
-         '0>'        : wordify(greater_than_zero),
-         '='         : wordify(equals),
-         '>'         : wordify(greaterthan),
-         '<'         : wordify(lessthan),
-         '1-'        : wordify(minusone),
-         '1+'        : wordify(plusone),
-         'showmem'   : wordify(showmem),
-         'negate'    : wordify(negate),
-         'abs'       : wordify(_abs),
-         'min'       : wordify(_min),
-         'max'       : wordify(_max)}
+Words = {
+    "exit": {"doc": "Exits the session.", "fn": sys.exit},
+    "+": wordify(add),
+    "-": wordify(subtract),
+    "*": wordify(multiply),
+    "/": wordify(divide),
+    "mod": wordify(mod),
+    "drop": wordify(drop),
+    "swap": wordify(swap),
+    "dup": wordify(dup),
+    "over": wordify(over),
+    "rot": wordify(rot),
+    "nip": wordify(nip),
+    "tuck": wordify(tuck),
+    ".": wordify(dot),
+    ".s": wordify(dot_s),
+    "words": wordify(words),
+    "clear": wordify(clear),
+    "0=": wordify(equals_zero),
+    "0>": wordify(greater_than_zero),
+    "=": wordify(equals),
+    ">": wordify(greaterthan),
+    "<": wordify(lessthan),
+    "1-": wordify(minusone),
+    "1+": wordify(plusone),
+    "showmem": wordify(showmem),
+    "negate": wordify(negate),
+    "abs": wordify(_abs),
+    "min": wordify(_min),
+    "max": wordify(_max),
+}
 
 # Aliases
-Words['add']        = Words['+']
-Words['subtract']   = Words['-']
-Words['multiply']   = Words['*']
-Words['divide']     = Words['/']
-Words['quit']       = Words['exit']
+Words["add"] = Words["+"]
+Words["subtract"] = Words["-"]
+Words["multiply"] = Words["*"]
+Words["divide"] = Words["/"]
+Words["quit"] = Words["exit"]

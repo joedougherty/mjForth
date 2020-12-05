@@ -37,3 +37,15 @@ def test_swap():
     swap(Data=two_items)
     assert(two_items.peek() == 'frick')
     assert(two_items.contents[-2] == 'frack')
+
+
+def test_dup():
+    tiny = Stack()
+    with pytest.raises(IndexError): 
+        dup(Data=tiny)
+
+    tiny = Stack()
+    tiny.push(1)
+    dup(Data=tiny)
+    assert(tiny.peek() == 1)
+    assert(tiny.contents[-2] == 1)

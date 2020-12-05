@@ -40,73 +40,73 @@ Return = Stack()
 Memory = dict()
 
 
-def clear():
+def clear(Data=Data):
     """ Empty the (data/parameter) stack! """
     Data.contents.clear()
 
 
-def drop():
+def drop(Data=Data):
     Data.pop()
 
 
-def swap():
+def swap(Data=Data):
     a, b = Data.pop(), Data.pop()
     Data.push(a)
     Data.push(b)
 
 
-def dup():
+def dup(Data=Data):
     Data.push(copy(Data.peek()))
 
 
-def over():
+def over(Data=Data):
     copiedval = copy(Data.contents[-2])
     Data.push(copiedval)
 
 
-def rot():
+def rot(Data=Data):
     Data.push(Data.contents.pop(0))
 
 
-def nip():
-    swap()
-    drop()
+def nip(Data=Data):
+    swap(Data=Data)
+    drop(Data=Data)
 
 
-def tuck():
-    swap()
-    over()
+def tuck(Data=Data):
+    swap(Data=Data)
+    over(Data=Data)
 
 
-def add():
+def add(Data=Data):
     """ This is a custom `add` implementation. """
     Data.push(Data.pop() + Data.pop())
 
 
-def subtract():
+def subtract(Data=Data):
     """ This is a custom `subtract` implementation. """
     a, b = Data.pop(), Data.pop()
     Data.push(b - a)
 
 
-def multiply():
+def multiply(Data=Data):
     """ This is a custom `multiply` implementation. """
     Data.push(Data.pop() * Data.pop())
 
 
-def divide():
+def divide(Data=Data):
     """ This is a custom `divide` implementation. """
     a, b = Data.pop(), Data.pop()
     Data.push(int(b / (a * 1.0)))
 
 
-def mod():
+def mod(Data=Data):
     """ Custom mod. """
     a, b = Data.pop(), Data.pop()
     Data.push(operator.mod(b, a))
 
 
-def equals():
+def equals(Data=Data):
     """ Are the top two stack items equal? """
     if Data.pop() == Data.pop():
         Data.push(TRUE)
@@ -114,7 +114,7 @@ def equals():
         Data.push(FALSE)
 
 
-def equals_zero():
+def equals_zero(Data=Data):
     """ Pop the top. Does it equal 0? """
     top = Data.pop()
     if top == 0:
@@ -123,12 +123,12 @@ def equals_zero():
         Data.push(FALSE)
 
 
-def dot():
+def dot(Data=Data):
     """ Pop 'n print! """
     print((Data.pop()))
 
 
-def dot_s():
+def dot_s(Data=Data):
     """ Print stack and stack height. """
     print(("<{}> {}".format(Data.height(), " ".join([str(i) for i in Data.contents]))))
 
@@ -141,7 +141,7 @@ def words():
     print(word_list)
 
 
-def greaterthan():
+def greaterthan(Data=Data):
     """ > ? """
     a, b = Data.pop(), Data.pop()
     if b > a:
@@ -150,7 +150,7 @@ def greaterthan():
         Data.push(FALSE)
 
 
-def lessthan():
+def lessthan(Data=Data):
     """ < ? """
     a, b = Data.pop(), Data.pop()
     if b < a:
@@ -159,17 +159,17 @@ def lessthan():
         Data.push(FALSE)
 
 
-def minusone():
+def minusone(Data=Data):
     """ Subtract 1 from the top val of the stack. """
     Data.push(Data.pop() - 1)
 
 
-def plusone():
+def plusone(Data=Data):
     """ Add 1 to the top val of the stack. """
     Data.push(Data.pop() + 1)
 
 
-def greater_than_zero():
+def greater_than_zero(Data=Data):
     """ Is top val greater than zero? """
     if Data.pop() > 0:
         Data.push(TRUE)
@@ -177,7 +177,7 @@ def greater_than_zero():
         Data.push(FALSE)
 
 
-def showmem():
+def showmem(Memory=Memory):
     if Memory == dict():
         print("No global variables defined!")
     else:
@@ -185,22 +185,22 @@ def showmem():
             print(("{}: {}".format(k, v)))
 
 
-def negate():
+def negate(Data=Data):
     """ n -- -n """
     Data.push(Data.pop() * -1)
 
 
-def _abs():
+def _abs(Data=Data):
     """  n -- |n| """
     Data.push(abs(Data.pop()))
 
 
-def _min():
+def _min(Data=Data):
     """ n1 n2 -- n-min """
     Data.push(min([Data.pop(), Data.pop()]))
 
 
-def _max():
+def _max(Data=Data):
     """ n1 n2 -- n-max """
     Data.push(max([Data.pop(), Data.pop()]))
 

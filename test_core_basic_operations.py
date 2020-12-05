@@ -19,15 +19,15 @@ def test_clear():
 
 
 def test_drop():
+    empty = Stack()
+    with pytest.raises(StackUnderflowError):
+        drop(Data=empty)
+
     tiny = Stack()
     tiny.push('a')
     tiny.push(1)
     drop(Data=tiny)
     assert(tiny.peek() == 'a')
-
-    empty = Stack()
-    with pytest.raises(StackUnderflowError):
-        drop(Data=empty)
 
 
 def test_swap():
@@ -49,3 +49,10 @@ def test_dup():
     dup(Data=tiny)
     assert(tiny.peek() == 1)
     assert(tiny.contents[-2] == 1)
+
+
+def test_over():
+    tiny = Stack()
+    tiny.push(1)
+    with pytest.raises(StackUnderflowError):
+        over(Data=tiny)

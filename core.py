@@ -27,15 +27,18 @@ class Stack:
                 raise StackOverflowError(msg)
         self.contents.append(item)
 
-    def pop(self):
+    def pop(self, idx=None):
         try:
-            return self.contents.pop()
+            if idx is None:
+                return self.contents.pop()
+            else:
+                return self.contents.pop(idx)
         except IndexError:
             raise StackUnderflowError("Not enough items on the stack to `pop()`!")
 
-    def peek(self):
+    def peek(self, idx=-1):
         try:
-            return self.contents[-1]
+            return self.contents[idx]
         except IndexError:
             raise StackUnderflowError("Not enough items on the stack to `peek()`!")
 
@@ -44,6 +47,9 @@ class Stack:
 
     def height(self):
         return len(self.contents)
+
+    def clear(self):
+        self.contents.clear()
 
 
 TRUE = -1
@@ -56,7 +62,7 @@ Memory = dict()
 
 def clear(Data=Data):
     """ Empty the (data/parameter) stack! """
-    Data.contents.clear()
+    Data.clear()
 
 
 def drop(Data=Data):
@@ -74,12 +80,12 @@ def dup(Data=Data):
 
 
 def over(Data=Data):
-    copiedval = copy(Data.contents[-2])
+    copiedval = copy(Data.peek(-2))
     Data.push(copiedval)
 
 
 def rot(Data=Data):
-    Data.push(Data.contents.pop(0))
+    Data.push(Data.pop(0))
 
 
 def nip(Data=Data):

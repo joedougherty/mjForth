@@ -5,6 +5,14 @@ import operator
 import sys
 
 
+class StackUnderflowError(Exception):
+    pass
+
+
+class StackOverflowError(Exception):
+    pass
+
+
 class Stack:
     def __init__(self, height_limit=None):
         self.contents = []
@@ -16,14 +24,20 @@ class Stack:
                 msg = "This Stack has a height_limit set to: {}".format(
                     self.height_limit
                 )
-                raise ValueError(msg)
+                raise StackOverflowError(msg)
         self.contents.append(item)
 
     def pop(self):
-        return self.contents.pop()
+        try:
+            return self.contents.pop()
+        except IndexError:
+            raise StackUnderflowError("Not enough items on the stack to `pop()`!")
 
     def peek(self):
-        return self.contents[-1]
+        try:
+            return self.contents[-1]
+        except IndexError:
+            raise StackUnderflowError("Not enough items on the stack to `peek()`!")
 
     def is_empty(self):
         return self.height() == 0

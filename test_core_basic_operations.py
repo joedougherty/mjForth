@@ -26,7 +26,7 @@ def test_drop():
     assert(tiny.peek() == 'a')
 
     empty = Stack()
-    with pytest.raises(IndexError):
+    with pytest.raises(StackUnderflowError):
         drop(Data=empty)
 
 
@@ -41,7 +41,7 @@ def test_swap():
 
 def test_dup():
     tiny = Stack()
-    with pytest.raises(IndexError): 
+    with pytest.raises(StackUnderflowError): 
         dup(Data=tiny)
 
     tiny = Stack()

@@ -123,7 +123,7 @@ def show_definition(word):
         return False
 
 
-def call_word(word, input_list_ref):
+def call_word(word):
     fn = Words[word]["fn"]
 
     if callable(fn):
@@ -131,7 +131,8 @@ def call_word(word, input_list_ref):
     elif isinstance(fn, list):
         consume_tokens(copy(fn))
     else:
-        print(f'''{word} has not been defined!''')
+        # TODO -- raise an appropriate exception here
+        print(f'''{word} is neither a function nor a list of words!''')
         return False
 
 
@@ -184,6 +185,11 @@ def parse_conditional(input_list_ref):
             consume_tokens(otherwise)
 
 
+def declare_variable(input_list_ref):
+    varname = input_list_ref.pop(0)
+    Memory[varname] = None
+
+
 def set_or_get_variable(term, input_list_ref):
     next_token = input_list_ref.pop(0)
     if next_token == "!":
@@ -191,10 +197,8 @@ def set_or_get_variable(term, input_list_ref):
     elif next_token == "@":
         Data.push(Memory[term])
     else:
-        print(
-            "Was trying to set variable given by '{}' but something went awfully awry!"
-        )
-
+        print(f'''Was trying to set variable given by '{term}' but something went awfully awry!''')
+        
 
 def is_a_literal(term):
     return is_a_number(term) or term in ("true", "false")
@@ -235,35 +239,30 @@ def handle_literal(term):
 
 
 def handle_term(term, input_list_ref):
-    if is_a_literal(term):  # Push literals
+    if term in Words:               # term is a Word -- call it!
+        call_word(term)
+    elif is_a_literal(term):        # Push literals on to the Data stack
         handle_literal(term)
-    elif term == ":":  # Word definition
+    elif term in Memory:            # Get a variable definition, or redefine existing variable
+        set_or_get_variable(term, input_list_ref)
+    elif term == ":":               # Define a new Word 
         define_word(input_list_ref)
-    elif term == "?DO":  # Execute DO loop
+    elif term == "?DO":             # Execute DO loop
         doloop_body = takewhile_and_pop("LOOP", input_list_ref)
         run_doloop(doloop_body)
-    elif term == "BEGIN":  # Execute WHILE loop
+    elif term == "BEGIN":           # Execute WHILE loop
         whileloop_body = takewhile_and_pop("REPEAT", input_list_ref)
         run_whileloop(whileloop_body)
-    elif term in Words:  # Word call
-        call_word(term, input_list_ref)
-    elif term == "see":  # Function documentation
-        try:
-            show_definition(input_list_ref.pop(0))
-        except IndexError:
-            print("Missing word. Ex: `see +`")
-    elif term == "IF":  # Conditional
+    elif term == "see":             # Show a Word's definition
+        show_definition(input_list_ref.pop(0))
+    elif term == "IF":              # Handle Conditionals
         parse_conditional(input_list_ref)
-    elif term == "variable":  # Variable declaration
-        try:
-            Memory[input_list_ref.pop(0)] = None
-        except IndexError:
-            print("Missing variable name. Ex: `variable foo`")
-    elif term in Memory:  # Variable
-        set_or_get_variable(term, input_list_ref)
+    elif term == "variable":        # Declare the existence of a new variable in Memory
+        declare_variable(input_list_ref.pop(0))
     else:
+        # TODO -- raise an appropriate exception here
         print(f'''I don't know what to do with `{term}` !!!''')
-
+    
 
 def tokenize(input_line):
     input_line = (
@@ -297,7 +296,7 @@ def main():
             consume_tokens(
                 tokenize(prompt("mjF> ", history=history, completer=read_dictionary()))
             )
-            print("ok")
+            print(f'''ok <{Data.height()}>''')
         except KeyboardInterrupt:
             print("")
         except EOFError:

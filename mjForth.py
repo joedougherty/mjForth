@@ -98,64 +98,49 @@ def define_word(input_list_ref):
         input_list_ref.pop(0)  # Pop (
         comment = takewhile_and_pop(")", input_list_ref)
     else:
-        print(
-            (
-                "Name must be followed by paren docs! Was trying to define: '{}'".format(
-                    name
-                )
-            )
-        )
+        print(f'''Name must be followed by paren docs. Was trying to define: `{name}`.''')
         input_list_ref.clear()
         return False
     body = takewhile_and_pop(";", input_list_ref)
 
     for word in body:
         if must_be_defined(word) and word != name:
-            print(("You must define `{}` before invoking it!!!".format(word)))
+            print(f'''You must define `{word}` before invoking it!''')
             input_list_ref.clear()
             return False
 
     if name in Words:
-        print(("'{}' was redefined.".format(name)))
+        print(f'''`{name}` was redefined.''')
 
     Words[name] = {"doc": comment, "fn": body}
 
 
 def show_definition(word):
-    if word not in Words:
-        print(("{} has not been defined!".format(word)))
+    doc, fn = Words[word]["doc"], Words[word]["fn"]
+
+    if isinstance(doc, list):
+        doc = " ".join([str(i) for i in doc]) 
+    
+    if callable(fn):
+        print(f'''  {fn.__name__} [built-in]''')
+    elif isinstance(fn, list):
+        joined_fn = " ".join(fn)
+        print(f''': {word}\n  ( {doc} )\n  {joined_fn} ; ''')
+    else:
+        print(f'''{word} has not been defined!''')
         return False
 
-    if isinstance(Words[word]["doc"], list):
-        print(("({})".format(" ".join(Words[word]["doc"]))))
-    if isinstance(Words[word]["doc"], str):
-        print(("({})".format(Words[word]["doc"])))
-    if callable(Words[word]["fn"]):
-        print(("  " + Words[word]["fn"].__name__ + " [built-in]"))
-    if isinstance(Words[word]["fn"], list):
-        print(("  " + " ".join([str(i) for i in Words[word]["fn"]])))
-        print(
-            (
-                " : {} ( {} ) {} ; ".format(
-                    word,
-                    " ".join(Words[word]["doc"]),
-                    " ".join([str(i) for i in Words[word]["fn"]]),
-                )
-            )
-        )
 
+def call_word(word, input_list_ref):
+    fn = Words[word]["fn"]
 
-def call_word(term, input_list_ref):
-    if isinstance(Words[term]["fn"], list):
-        fn_list = copy(Words[term]["fn"])
-        consume_tokens(fn_list)
-    elif callable(Words[term]["fn"]):
-        try:
-            Words[term]["fn"]()
-        except IndexError:
-            print("Empty stack!!!")
+    if callable(fn):
+        fn()
+    elif isinstance(fn, list):
+        consume_tokens(copy(fn))
     else:
-        print(("`{}` is not a word I know about!!!".format(term)))
+        print(f'''{word} has not been defined!''')
+        return False
 
 
 def resolve_iterator(i, fn_body_as_word_list):

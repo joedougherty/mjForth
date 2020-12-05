@@ -62,5 +62,33 @@ def test_over():
     two_items.push(-666)
     over(Data=two_items)
     assert(two_items.height() == 3)
-
     assert(two_items.pop() == 10)
+
+
+def test_rot():
+    empty = Stack()
+    with pytest.raises(StackUnderflowError):
+        rot(Data=empty)
+
+    tiny = Stack()
+    tiny.push(1)
+    tiny.push(2)
+    tiny.push(3)
+    rot(Data=tiny)
+    assert(tiny.height() == 3)
+    assert(tiny.peek() == 1)
+    assert(tiny.peek(-2) == 3)
+    assert(tiny.peek(-3) == 2)
+
+    tiny = Stack()
+    tiny.push(10)
+    tiny.push(20)
+    tiny.push(30)
+    tiny.push(1)
+    tiny.push(2)
+    tiny.push(3)
+    rot(Data=tiny)
+    assert(tiny.height() == 6)
+    assert(tiny.peek() == 1)
+    assert(tiny.peek(-2) == 3)
+    assert(tiny.peek(-3) == 2)

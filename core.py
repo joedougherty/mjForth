@@ -85,7 +85,7 @@ def over(Data=Data):
 
 
 def rot(Data=Data):
-    Data.push(Data.pop(0))
+    Data.push(Data.pop(-3))
 
 
 def nip(Data=Data):

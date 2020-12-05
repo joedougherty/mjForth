@@ -42,9 +42,7 @@ RESERVED = (
 
 
 def welcome():
-    print(
-        ("""mjForth {}, Copyright (C) 2018-2020 Joe Dougherty.""".format(__version__))
-    )
+    print(f'''mjForth {__version__}, Copyright (C) 2018-2020 Joe Dougherty.''')
 
 
 def takewhile_and_pop(match_token, list_of_tokens):
@@ -56,13 +54,7 @@ def takewhile_and_pop(match_token, list_of_tokens):
     tokens from list_of_tokens.
     """
     if match_token not in list_of_tokens:
-        print(
-            (
-                "Expected to encounter '{}', but did not see it in list_of_tokens!".format(
-                    match_token
-                )
-            )
-        )
+        print(f'''Expected to encounter '{match_token}', but did not see it in list_of_tokens!''')
         return False
 
     tw = [i for i in takewhile(lambda t: t != match_token, list_of_tokens)]
@@ -229,7 +221,7 @@ def parse_num(num):
             return float(num)
         except:
             raise ValueError(
-                "I do not know how to convert {} into a numeric value!".format(num)
+                f'''I do not know how to convert {num} into a numeric value!'''
             )
 
 
@@ -270,7 +262,7 @@ def handle_term(term, input_list_ref):
     elif term in Memory:  # Variable
         set_or_get_variable(term, input_list_ref)
     else:
-        print(("I don't know what to do with `{}` !!!".format(term)))
+        print(f'''I don't know what to do with `{term}` !!!''')
 
 
 def tokenize(input_line):
@@ -328,12 +320,12 @@ def execute_lines(lines):
         consume_tokens(tokenize(line))
     
 
-
 if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1]:
-        if os.path.exists(sys.argv[1]):
-            execute_file(sys.argv[1])
+        filename = sys.argv[1]
+        if os.path.exists(filename):
+            execute_file(filename)
         else:
-            print(("Could not find {}!".format(sys.argv[1])))
+            print(f'''{filename} does not exist!''')
             sys.exit(2)
     main()

@@ -99,12 +99,12 @@ def equals_zero():
 
 def dot():
     """ Pop 'n print! """
-    print(Data.pop())
+    print((Data.pop()))
 
 
 def dot_s():
     """ Print stack and stack height. """
-    print("<{}> {}".format(Data.height(), ' '.join([str(i) for i in Data.contents])))
+    print(("<{}> {}".format(Data.height(), ' '.join([str(i) for i in Data.contents]))))
 
 
 def words():
@@ -155,8 +155,8 @@ def showmem():
     if Memory == dict():
         print('No global variables defined!')
     else:
-        for k, v in Memory.items():
-            print('{}: {}'.format(k, v))
+        for k, v in list(Memory.items()):
+            print(('{}: {}'.format(k, v)))
 
 
 def negate():

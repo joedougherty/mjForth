@@ -14,10 +14,10 @@ import sys
 
 from prompt_toolkit import prompt
 from prompt_toolkit.history import InMemoryHistory
-from prompt_toolkit.contrib.completers import WordCompleter
+from prompt_toolkit.completion import WordCompleter
 
 
-__version__ = '0.0.4'
+__version__ = '0.0.5'
 
 
 RESERVED = ('?DO', 'i', 'LOOP', '', ' ', 'IF', 'ELSE', 'ENDIF', 'variable',
@@ -25,7 +25,7 @@ RESERVED = ('?DO', 'i', 'LOOP', '', ' ', 'IF', 'ELSE', 'ENDIF', 'variable',
 
 
 def welcome():
-    print("""mjForth {}, Copyright (C) 2018 Joe Dougherty.""".format(__version__))
+    print(("""mjForth {}, Copyright (C) 2018-2020 Joe Dougherty.""".format(__version__)))
 
 
 def takewhile_and_pop(match_token, list_of_tokens):
@@ -37,7 +37,7 @@ def takewhile_and_pop(match_token, list_of_tokens):
     tokens from list_of_tokens.
     """
     if match_token not in list_of_tokens:
-        print("Expected to encounter '{}', but did not see it in list_of_tokens!".format(match_token))
+        print(("Expected to encounter '{}', but did not see it in list_of_tokens!".format(match_token)))
         return False
 
     tw = [i for i in takewhile(lambda t: t != match_token, list_of_tokens)]
@@ -71,37 +71,37 @@ def define_word(input_list_ref):
         input_list_ref.pop(0)  # Pop (
         comment = takewhile_and_pop(')', input_list_ref)
     else:
-        print("Name must be followed by paren docs! Was trying to define: '{}'".format(name))
+        print(("Name must be followed by paren docs! Was trying to define: '{}'".format(name)))
         input_list_ref.clear()
         return False
     body = takewhile_and_pop(';', input_list_ref)
 
     for word in body:
         if must_be_defined(word) and word != name:
-            print("You must define `{}` before invoking it!!!".format(word))
+            print(("You must define `{}` before invoking it!!!".format(word)))
             input_list_ref.clear()
             return False
 
     if name in Words:
-        print("'{}' was redefined.".format(name))
+        print(("'{}' was redefined.".format(name)))
 
     Words[name] = {'doc': comment, 'fn': body}
 
 
 def show_definition(word):
     if word not in Words:
-        print("{} has not been defined!".format(word))
+        print(("{} has not been defined!".format(word)))
         return False
 
     if isinstance(Words[word]['doc'], list):
-        print('({})'.format(' '.join(Words[word]['doc'])))
+        print(('({})'.format(' '.join(Words[word]['doc']))))
     if isinstance(Words[word]['doc'], str):
-        print('({})'.format(Words[word]['doc']))
+        print(('({})'.format(Words[word]['doc'])))
     if callable(Words[word]['fn']):
-        print('  ' + Words[word]['fn'].__name__ + ' [built-in]')
+        print(('  ' + Words[word]['fn'].__name__ + ' [built-in]'))
     if isinstance(Words[word]['fn'], list):
-        print('  ' + ' '.join([str(i) for i in Words[word]['fn']]))
-        print(' : {} ( {} ) {} ; '.format(word, ' '.join(Words[word]['doc']), ' '.join([str(i) for i in Words[word]['fn']])))
+        print(('  ' + ' '.join([str(i) for i in Words[word]['fn']])))
+        print((' : {} ( {} ) {} ; '.format(word, ' '.join(Words[word]['doc']), ' '.join([str(i) for i in Words[word]['fn']]))))
 
 
 def call_word(term, input_list_ref):
@@ -114,7 +114,7 @@ def call_word(term, input_list_ref):
         except IndexError:
             print("Empty stack!!!")
     else:
-        print("`{}` is not a word I know about!!!".format(term))
+        print(("`{}` is not a word I know about!!!".format(term)))
 
 
 def resolve_iterator(i, fn_body_as_word_list):
@@ -275,7 +275,7 @@ def handle_term(term, input_list_ref):
     elif term in Memory:        # Variable
         set_or_get_variable(term, input_list_ref)
     else:
-        print("I don't know what to do with `{}` !!!".format(term))
+        print(("I don't know what to do with `{}` !!!".format(term)))
 
 
 def tokenize(input_line):
@@ -327,6 +327,6 @@ if __name__ == '__main__':
         if os.path.exists(sys.argv[1]):
             execute_file(sys.argv[1])
         else:
-            print("Could not find {}!".format(sys.argv[1]))
+            print(("Could not find {}!".format(sys.argv[1])))
             sys.exit(2)
     main()

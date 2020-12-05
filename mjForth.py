@@ -366,8 +366,16 @@ def execute_file(abs_path_to_file):
     with open(abs_path_to_file, "r") as f:
         lines = [l.strip() for l in f.readlines()]
 
+    execute(lines)
+
+
+def execute_lines(lines):
+    if isinstance(lines, str):
+        lines = [lines]
+
     for line in lines:
         consume_tokens(tokenize(line))
+    
 
 
 if __name__ == "__main__":

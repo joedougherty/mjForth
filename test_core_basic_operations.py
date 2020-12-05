@@ -56,3 +56,11 @@ def test_over():
     tiny.push(1)
     with pytest.raises(StackUnderflowError):
         over(Data=tiny)
+
+    two_items = Stack()
+    two_items.push(10)
+    two_items.push(-666)
+    over(Data=two_items)
+    assert(two_items.height() == 3)
+
+    assert(two_items.pop() == 10)

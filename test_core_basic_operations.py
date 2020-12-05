@@ -92,3 +92,28 @@ def test_rot():
     assert(tiny.peek() == 1)
     assert(tiny.peek(-2) == 3)
     assert(tiny.peek(-3) == 2)
+
+
+def test_nip():
+    empty = Stack()
+    with pytest.raises(StackUnderflowError):
+        nip(Data=empty)
+
+    tiny = Stack()
+    tiny.push(1)
+    tiny.push(2)
+    nip(Data=tiny)
+    assert(tiny.height() == 1)
+    assert(tiny.peek() == 2)
+
+    tiny = Stack()
+    tiny.push(10)
+    tiny.push(20)
+    tiny.push(30)
+    tiny.push(1)
+    tiny.push(2)
+    tiny.push(3)
+    nip(Data=tiny)
+    assert(tiny.height() == 5)
+    assert(tiny.peek() == 3)
+

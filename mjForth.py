@@ -92,11 +92,9 @@ def define_word(input_list_ref):
     name = input_list_ref.pop(0)
 
     if input_list_ref[0] != "(":
-        print(
-            f"""Name must be followed by paren docs. Was trying to define: `{name}`."""
-        )
+        msg = f"""Name must be followed by paren docs. Was trying to define: `{name}`."""
         input_list_ref.clear()
-        return False
+        raise SyntaxError(msg)
 
     input_list_ref.pop(0)  # Pop (
 
@@ -208,9 +206,7 @@ def set_or_get_variable(token, input_list_ref):
     elif next_token == "@":
         Data.push(Memory[token])
     else:
-        print(
-            f"""Was trying to set variable given by '{token}' but something went awfully awry!"""
-        )
+        raise SyntaxError(f'''Was trying to get or set variable '{token}', but line missing ! or @''')
 
 
 def is_a_literal(token):
@@ -273,8 +269,7 @@ def handle_token(token, input_list_ref):
         # Declare the existence of a new variable in Memory
         declare_variable(input_list_ref.pop(0))
     else:
-        # TODO -- raise an appropriate exception here
-        print(f"""I don't know what to do with `{token}` !!!""")
+        raise SyntaxError(f"""I don't know what to do with `{token}` !!!""")
 
 
 def tokenize(input_line):

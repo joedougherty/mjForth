@@ -131,3 +131,6 @@ def test_tuck():
     assert(tiny.peek() == 2)
     assert(tiny.peek(-2) == 1)
     assert(tiny.peek(-3) == 2)
+
+
+

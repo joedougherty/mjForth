@@ -1,6 +1,7 @@
 ## mjForth ##
 
-An experimental REPL/interpreter. Seeks to emulate a subset of [gforth](https://www.gnu.org/software/gforth/). Also includes some functional programming ideas inspired by [Joy](http://www.kevinalbrecht.com/code/joy-mirror/synops.html).
+An experimental REPL/interpreter. Seeks to emulate a subset of [gforth](https://www.gnu.org/software/gforth/). 
+
 
 ### Stack Manipulations ###
 
@@ -76,17 +77,6 @@ Get its value and push on top of the data stack.
 
 `v @`
 
-### (Joy-style) Combinators ###
-
-| Combinator | Stack Result                              |
-|------------|-------------------------------------------|
-| i          | `[ 1 2 ] i => 1 2`                        |
-| concat     | `[ 1 2 ] [ 3 4 ] concat => [ 1 2 3 4 ]`   |
-| dip        | `[ 1 2 ] [ 3 4 ] dip => 3 4 [ 1 2 ]`      |
-| cons       | `[ 1 2 ] [ 3 4 ] cons => [ [ 1 2 ] 3 4 ]` |
-| unit       | `[ 1 2 3 ] unit => [ [ 1 2 3 ] ]`         |
-
-(More on combinators [here](http://www.kevinalbrecht.com/code/joy-mirror/j06prg.html))
 
 ## Notes ##
 

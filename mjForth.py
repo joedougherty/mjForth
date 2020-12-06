@@ -184,8 +184,7 @@ def parse_conditional(input_list_ref):
             consume_tokens(otherwise)
 
 
-def declare_variable(input_list_ref):
-    varname = input_list_ref.pop(0)
+def declare_variable(varname):
     Memory[varname] = None
 
 

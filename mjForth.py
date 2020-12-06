@@ -214,10 +214,10 @@ def set_or_get_variable(token, input_list_ref):
 
 
 def is_a_literal(token):
-    return is_a_number(token)[0] or token in ("true", "false")
+    return parse_number(token)[0] or token in ("true", "false")
 
 
-def is_a_number(token):
+def parse_number(token):
     try:
         return (True, int(token))
     except ValueError:
@@ -225,20 +225,21 @@ def is_a_number(token):
             return (True, float(token))
         except ValueError:
             return (False, token)
-        return (False, token)
+    return (False, token)
 
 
 def handle_literal(token):
-    isnum, num = is_a_number(token)
-
-    if isnum:
-        Data.push(num)
-    elif token == "true":
-        Data.push(TRUE)
+    if token == "true":
+        new_val = TRUE
     elif token == "false":
-        Data.push(FALSE)
+        new_val = FALSE
     else:
-        raise ValueError(f"""I do not know how to handle literal: {token}!""")
+        isnum, newval = parse_number(token)
+
+        if not isnum:
+            raise SyntaxError(f'''{token} must be numeric!''')
+
+    Data.push(newval)
 
 
 def handle_token(token, input_list_ref):
@@ -311,6 +312,8 @@ def main():
             print(f"""ok <{Data.height()}>""")
         except KeyboardInterrupt:
             print("")
+        except SyntaxError as e:
+            print(e)
         except EOFError:
             print("")
             sys.exit(0)

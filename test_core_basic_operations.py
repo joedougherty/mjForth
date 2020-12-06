@@ -117,3 +117,17 @@ def test_nip():
     assert(tiny.height() == 5)
     assert(tiny.peek() == 3)
 
+
+def test_tuck():
+    empty = Stack()
+    with pytest.raises(StackUnderflowError):
+        tuck(Data=empty)
+
+    tiny = Stack()
+    tiny.push(1)
+    tiny.push(2)
+    tuck(Data=tiny)
+    assert(tiny.height() == 3)
+    assert(tiny.peek() == 2)
+    assert(tiny.peek(-2) == 1)
+    assert(tiny.peek(-3) == 2)

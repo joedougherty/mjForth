@@ -285,7 +285,7 @@ def tokenize(input_line):
         .split(" ")
     )
 
-    return [w for w in input_line if w != ""]
+    return [token for token in input_line if token != ""]
 
 
 def consume_tokens(input_list):

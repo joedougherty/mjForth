@@ -206,6 +206,7 @@ def set_or_get_variable(token, input_list_ref):
     elif next_token == "@":
         Data.push(Memory[token])
     else:
+        input_list_ref.clear()
         raise SyntaxError(f'''Was trying to get or set variable '{token}', but line missing ! or @''')
 
 

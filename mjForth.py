@@ -201,79 +201,79 @@ def declare_variable(varname):
     Memory[varname] = None
 
 
-def set_or_get_variable(term, input_list_ref):
+def set_or_get_variable(token, input_list_ref):
     next_token = input_list_ref.pop(0)
     if next_token == "!":
-        Memory[term] = Data.pop()
+        Memory[token] = Data.pop()
     elif next_token == "@":
-        Data.push(Memory[term])
+        Data.push(Memory[token])
     else:
         print(
-            f"""Was trying to set variable given by '{term}' but something went awfully awry!"""
+            f"""Was trying to set variable given by '{token}' but something went awfully awry!"""
         )
 
 
-def is_a_literal(term):
-    return is_a_number(term)[0] or term in ("true", "false")
+def is_a_literal(token):
+    return is_a_number(token)[0] or token in ("true", "false")
 
 
-def is_a_number(term):
+def is_a_number(token):
     try:
-        return (True, int(term))
+        return (True, int(token))
     except ValueError:
         try:
-            return (True, float(term))
+            return (True, float(token))
         except ValueError:
-            return (False, term)
-        return (False, term)
+            return (False, token)
+        return (False, token)
 
 
-def handle_literal(term):
-    isnum, num = is_a_number(term)
+def handle_literal(token):
+    isnum, num = is_a_number(token)
 
     if isnum:
         Data.push(num)
-    elif term == "true":
+    elif token == "true":
         Data.push(TRUE)
-    elif term == "false":
+    elif token == "false":
         Data.push(FALSE)
     else:
-        raise ValueError(f"""I do not know how to handle literal: {term}!""")
+        raise ValueError(f"""I do not know how to handle literal: {token}!""")
 
 
-def handle_term(term, input_list_ref):
-    if term in Words:  
-        # term is a Word -- call it!
-        call_word(term)
-    elif is_a_literal(term):  
+def handle_token(token, input_list_ref):
+    if token in Words:  
+        # token is a Word -- call it!
+        call_word(token)
+    elif is_a_literal(token):  
         # Push literals on to the Data stack
-        handle_literal(term)
-    elif term in Memory:  
+        handle_literal(token)
+    elif token in Memory:  
         # Get a variable definition, or redefine existing variable
-        set_or_get_variable(term, input_list_ref)
-    elif term == "see":  
+        set_or_get_variable(token, input_list_ref)
+    elif token == "see":  
         # Show a Word's definition
         show_definition(input_list_ref.pop(0))
-    elif term == ":":  
+    elif token == ":":  
         # Define a new Word
         define_word(input_list_ref)
-    elif term == "?DO":  
+    elif token == "?DO":  
         # Execute DO loop
         doloop_body = takewhile_and_pop("LOOP", input_list_ref)
         run_doloop(doloop_body)
-    elif term == "BEGIN":  
+    elif token == "BEGIN":  
         # Execute WHILE loop
         whileloop_body = takewhile_and_pop("REPEAT", input_list_ref)
         run_whileloop(whileloop_body)
-    elif term == "IF":  
+    elif token == "IF":  
         # Handle Conditionals
         parse_conditional(input_list_ref)
-    elif term == "variable":  
+    elif token == "variable":  
         # Declare the existence of a new variable in Memory
         declare_variable(input_list_ref.pop(0))
     else:
         # TODO -- raise an appropriate exception here
-        print(f"""I don't know what to do with `{term}` !!!""")
+        print(f"""I don't know what to do with `{token}` !!!""")
 
 
 def tokenize(input_line):
@@ -290,8 +290,8 @@ def tokenize(input_line):
 
 def consume_tokens(input_list):
     while input_list:
-        term = input_list.pop(0)
-        handle_term(term, input_list)
+        token = input_list.pop(0)
+        handle_token(token, input_list)
 
 
 def read_dictionary():

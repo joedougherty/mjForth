@@ -185,6 +185,10 @@ def parse_conditional(input_list_ref):
 
 
 def declare_variable(varname):
+    if varname in Memory:
+        print(f'''{varname} has already been declared.''')
+        return False
+
     Memory[varname] = None
 
 

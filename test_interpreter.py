@@ -50,3 +50,17 @@ def test_variable():
     
     execute_lines('370101013 test !')
     assert(Memory['test'] == 370101013)
+
+    Data.clear()
+    execute_lines('13')
+    execute_lines('test !')
+    assert(Memory['test'] == 13)
+
+
+def test_word():
+    Data.clear()
+
+    execute_lines(' : fac_rec ( n -- n! ) dup 0> IF dup 1- fac_rec * ELSE drop 1 ENDIF ;')
+    execute_lines('6 fac_rec')
+    assert(Data.height() == 1)
+    assert(Data.peek() == 720)

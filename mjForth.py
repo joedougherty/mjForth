@@ -60,6 +60,7 @@ def takewhile_and_pop(match_token, list_of_tokens):
         return False
 
     tw = [i for i in takewhile(lambda t: t != match_token, list_of_tokens)]
+
     for found_item in tw:
         list_of_tokens.pop(0)
     list_of_tokens.pop(0)  # Remove matching character
@@ -81,24 +82,27 @@ def define_word(input_list_ref):
 
     This function will be called if the preceding token is ':'
 
-    If the remaining input string can't be parsed correctly,
-    input_list_ref will be .clear()'ed and we'll return False.
+    If the input string can be parsed:
+        * the newly defined word will added to Words
 
-    If the input string *can* be parsed, the newly defined
-    word will added to the globally-accessible Words dict.
+    If the remaining input string can't be parsed:
+        * input_list_ref will be .clear()'ed
+        * return False
     """
     name = input_list_ref.pop(0)
-    if input_list_ref[0] == "(":
-        input_list_ref.pop(0)  # Pop (
-        comment = takewhile_and_pop(")", input_list_ref)
-    else:
+
+    if input_list_ref[0] != "(":
         print(
             f"""Name must be followed by paren docs. Was trying to define: `{name}`."""
         )
         input_list_ref.clear()
         return False
 
+    input_list_ref.pop(0)  # Pop (
+
+    comment = takewhile_and_pop(")", input_list_ref)
     body = takewhile_and_pop(";", input_list_ref)
+
     for word in body:
         if must_be_defined(word) and word != name:
             print(f"""You must define `{word}` before invoking it!""")
@@ -154,6 +158,7 @@ def resolve_iterator(i, fn_body_as_word_list):
 
 def run_doloop(word_list):
     _from, _to = Data.pop(), Data.pop()
+
     for i in range(_from, _to):
         input_list = resolve_iterator(i, copy(word_list))
         consume_tokens(input_list)

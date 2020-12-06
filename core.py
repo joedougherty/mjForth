@@ -262,7 +262,7 @@ Words = {
     "abs": wordify(_abs),
     "min": wordify(_min),
     "max": wordify(_max),
-    "^esc": {"doc": "IPython escape hatch.", "fn": embed}
+    "^esc": {"doc": "IPython escape hatch.", "fn": embed},
 }
 
 # Aliases

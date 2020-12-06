@@ -16,9 +16,9 @@ def test_stack_addition_ints(x, y):
     tiny.push(x)
     tiny.push(y)
     add(Data=tiny)
-    assert(tiny.height() == 1)
-    assert(tiny.peek() == x + y)
-    assert(tiny.peek() == y + x)
+    assert tiny.height() == 1
+    assert tiny.peek() == x + y
+    assert tiny.peek() == y + x
 
 
 @given(integers(), integers())
@@ -27,5 +27,5 @@ def test_stack_subtraction_ints(x, y):
     tiny.push(x)
     tiny.push(y)
     subtract(Data=tiny)
-    assert(tiny.height() == 1)
-    assert(tiny.peek() == x - y)
+    assert tiny.height() == 1
+    assert tiny.peek() == x - y

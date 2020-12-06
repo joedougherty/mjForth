@@ -19,6 +19,10 @@ from prompt_toolkit.completion import WordCompleter
 __version__ = "0.0.5"
 
 
+class RunTimeError(Exception):
+    pass
+
+
 RESERVED = (
     "?DO",
     "i",
@@ -136,9 +140,7 @@ def call_word(word):
     elif isinstance(fn, list):
         consume_tokens(copy(fn))
     else:
-        # TODO -- raise an appropriate exception here
-        print(f"""{word} is neither a function nor a list of words!""")
-        return False
+        raise RunTimeError(f"""{word} is neither a function nor a list of words!""")
 
 
 def resolve_iterator(i, fn_body_as_word_list):
@@ -231,12 +233,9 @@ def handle_literal(token):
     elif token == "false":
         new_val = FALSE
     else:
-        isnum, newval = parse_number(token)
+        _, new_val = parse_number(token)
 
-        if not isnum:
-            raise SyntaxError(f'''{token} must be numeric!''')
-
-    Data.push(newval)
+    Data.push(new_val)
 
 
 def handle_token(token, input_list_ref):
@@ -308,7 +307,7 @@ def main():
             print(f"""ok <{Data.height()}>""")
         except KeyboardInterrupt:
             print("")
-        except SyntaxError as e:
+        except (SyntaxError, RunTimeError) as e:
             print(e)
         except EOFError:
             print("")

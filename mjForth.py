@@ -242,25 +242,34 @@ def handle_literal(term):
 
 
 def handle_term(term, input_list_ref):
-    if term in Words:  # term is a Word -- call it!
+    if term in Words:  
+        # term is a Word -- call it!
         call_word(term)
-    elif is_a_literal(term):  # Push literals on to the Data stack
+    elif is_a_literal(term):  
+        # Push literals on to the Data stack
         handle_literal(term)
-    elif term in Memory:  # Get a variable definition, or redefine existing variable
+    elif term in Memory:  
+        # Get a variable definition, or redefine existing variable
         set_or_get_variable(term, input_list_ref)
-    elif term == ":":  # Define a new Word
+    elif term == "see":  
+        # Show a Word's definition
+        show_definition(input_list_ref.pop(0))
+    elif term == ":":  
+        # Define a new Word
         define_word(input_list_ref)
-    elif term == "?DO":  # Execute DO loop
+    elif term == "?DO":  
+        # Execute DO loop
         doloop_body = takewhile_and_pop("LOOP", input_list_ref)
         run_doloop(doloop_body)
-    elif term == "BEGIN":  # Execute WHILE loop
+    elif term == "BEGIN":  
+        # Execute WHILE loop
         whileloop_body = takewhile_and_pop("REPEAT", input_list_ref)
         run_whileloop(whileloop_body)
-    elif term == "see":  # Show a Word's definition
-        show_definition(input_list_ref.pop(0))
-    elif term == "IF":  # Handle Conditionals
+    elif term == "IF":  
+        # Handle Conditionals
         parse_conditional(input_list_ref)
-    elif term == "variable":  # Declare the existence of a new variable in Memory
+    elif term == "variable":  
+        # Declare the existence of a new variable in Memory
         declare_variable(input_list_ref.pop(0))
     else:
         # TODO -- raise an appropriate exception here

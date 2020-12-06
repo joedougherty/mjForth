@@ -42,7 +42,7 @@ RESERVED = (
 
 
 def welcome():
-    print(f'''mjForth {__version__}, Copyright (C) 2018-2020 Joe Dougherty.''')
+    print(f"""mjForth {__version__}, Copyright (C) 2018-2020 Joe Dougherty.""")
 
 
 def takewhile_and_pop(match_token, list_of_tokens):
@@ -54,7 +54,9 @@ def takewhile_and_pop(match_token, list_of_tokens):
     tokens from list_of_tokens.
     """
     if match_token not in list_of_tokens:
-        print(f'''Expected to encounter '{match_token}', but did not see it in list_of_tokens!''')
+        print(
+            f"""Expected to encounter '{match_token}', but did not see it in list_of_tokens!"""
+        )
         return False
 
     tw = [i for i in takewhile(lambda t: t != match_token, list_of_tokens)]
@@ -90,19 +92,21 @@ def define_word(input_list_ref):
         input_list_ref.pop(0)  # Pop (
         comment = takewhile_and_pop(")", input_list_ref)
     else:
-        print(f'''Name must be followed by paren docs. Was trying to define: `{name}`.''')
+        print(
+            f"""Name must be followed by paren docs. Was trying to define: `{name}`."""
+        )
         input_list_ref.clear()
         return False
-    body = takewhile_and_pop(";", input_list_ref)
 
+    body = takewhile_and_pop(";", input_list_ref)
     for word in body:
         if must_be_defined(word) and word != name:
-            print(f'''You must define `{word}` before invoking it!''')
+            print(f"""You must define `{word}` before invoking it!""")
             input_list_ref.clear()
             return False
 
     if name in Words:
-        print(f'''`{name}` was redefined.''')
+        print(f"""`{name}` was redefined.""")
 
     Words[name] = {"doc": comment, "fn": body}
 
@@ -111,15 +115,15 @@ def show_definition(word):
     doc, fn = Words[word]["doc"], Words[word]["fn"]
 
     if isinstance(doc, list):
-        doc = " ".join([str(i) for i in doc]) 
-    
+        doc = " ".join([str(i) for i in doc])
+
     if callable(fn):
-        print(f'''  {fn.__name__} [built-in]''')
+        print(f"""  {fn.__name__} [built-in]""")
     elif isinstance(fn, list):
         joined_fn = " ".join(fn)
-        print(f''': {word}\n  ( {doc} )\n  {joined_fn} ; ''')
+        print(f""": {word}\n  ( {doc} )\n  {joined_fn} ; """)
     else:
-        print(f'''{word} has not been defined!''')
+        print(f"""{word} has not been defined!""")
 
 
 def call_word(word):
@@ -131,7 +135,7 @@ def call_word(word):
         consume_tokens(copy(fn))
     else:
         # TODO -- raise an appropriate exception here
-        print(f'''{word} is neither a function nor a list of words!''')
+        print(f"""{word} is neither a function nor a list of words!""")
         return False
 
 
@@ -186,7 +190,7 @@ def parse_conditional(input_list_ref):
 
 def declare_variable(varname):
     if varname in Memory:
-        print(f'''{varname} has already been declared.''')
+        print(f"""{varname} has already been declared.""")
         return False
 
     Memory[varname] = None
@@ -199,11 +203,13 @@ def set_or_get_variable(term, input_list_ref):
     elif next_token == "@":
         Data.push(Memory[term])
     else:
-        print(f'''Was trying to set variable given by '{term}' but something went awfully awry!''')
-        
+        print(
+            f"""Was trying to set variable given by '{term}' but something went awfully awry!"""
+        )
+
 
 def is_a_literal(term):
-    return (is_a_number(term)[0] or term in ("true", "false"))
+    return is_a_number(term)[0] or term in ("true", "false")
 
 
 def is_a_number(term):
@@ -227,34 +233,34 @@ def handle_literal(term):
     elif term == "false":
         Data.push(FALSE)
     else:
-        raise ValueError(f'''I do not know how to handle literal: {term}!''')
+        raise ValueError(f"""I do not know how to handle literal: {term}!""")
 
 
 def handle_term(term, input_list_ref):
-    if term in Words:               # term is a Word -- call it!
+    if term in Words:  # term is a Word -- call it!
         call_word(term)
-    elif is_a_literal(term):        # Push literals on to the Data stack
+    elif is_a_literal(term):  # Push literals on to the Data stack
         handle_literal(term)
-    elif term in Memory:            # Get a variable definition, or redefine existing variable
+    elif term in Memory:  # Get a variable definition, or redefine existing variable
         set_or_get_variable(term, input_list_ref)
-    elif term == ":":               # Define a new Word 
+    elif term == ":":  # Define a new Word
         define_word(input_list_ref)
-    elif term == "?DO":             # Execute DO loop
+    elif term == "?DO":  # Execute DO loop
         doloop_body = takewhile_and_pop("LOOP", input_list_ref)
         run_doloop(doloop_body)
-    elif term == "BEGIN":           # Execute WHILE loop
+    elif term == "BEGIN":  # Execute WHILE loop
         whileloop_body = takewhile_and_pop("REPEAT", input_list_ref)
         run_whileloop(whileloop_body)
-    elif term == "see":             # Show a Word's definition
+    elif term == "see":  # Show a Word's definition
         show_definition(input_list_ref.pop(0))
-    elif term == "IF":              # Handle Conditionals
+    elif term == "IF":  # Handle Conditionals
         parse_conditional(input_list_ref)
-    elif term == "variable":        # Declare the existence of a new variable in Memory
+    elif term == "variable":  # Declare the existence of a new variable in Memory
         declare_variable(input_list_ref.pop(0))
     else:
         # TODO -- raise an appropriate exception here
-        print(f'''I don't know what to do with `{term}` !!!''')
-    
+        print(f"""I don't know what to do with `{term}` !!!""")
+
 
 def tokenize(input_line):
     input_line = (
@@ -288,7 +294,7 @@ def main():
             consume_tokens(
                 tokenize(prompt("mjF> ", history=history, completer=read_dictionary()))
             )
-            print(f'''ok <{Data.height()}>''')
+            print(f"""ok <{Data.height()}>""")
         except KeyboardInterrupt:
             print("")
         except EOFError:
@@ -309,7 +315,7 @@ def execute_lines(lines):
 
     for line in lines:
         consume_tokens(tokenize(line))
-    
+
 
 if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1]:
@@ -317,6 +323,6 @@ if __name__ == "__main__":
         if os.path.exists(filename):
             execute_file(filename)
         else:
-            print(f'''{filename} does not exist!''')
+            print(f"""{filename} does not exist!""")
             sys.exit(2)
     main()

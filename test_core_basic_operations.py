@@ -87,6 +87,7 @@ def test_rot():
     tiny.push(1)
     tiny.push(2)
     tiny.push(3)
+    assert(tiny.height() == 6)
     rot(Data=tiny)
     assert(tiny.height() == 6)
     assert(tiny.peek() == 1)

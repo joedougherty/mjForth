@@ -120,7 +120,6 @@ def show_definition(word):
         print(f''': {word}\n  ( {doc} )\n  {joined_fn} ; ''')
     else:
         print(f'''{word} has not been defined!''')
-        return False
 
 
 def call_word(word):
@@ -201,41 +200,31 @@ def set_or_get_variable(term, input_list_ref):
         
 
 def is_a_literal(term):
-    return is_a_number(term) or term in ("true", "false")
+    return (is_a_number(term)[0] or term in ("true", "false"))
 
 
 def is_a_number(term):
     try:
-        int(term)
-        return True
+        return (True, int(term))
     except ValueError:
         try:
-            float(term)
-            return True
+            return (True, float(term))
         except ValueError:
-            return False
-        return False
-
-
-def parse_num(num):
-    try:
-        return int(num)
-    except ValueError:
-        try:
-            return float(num)
-        except:
-            raise ValueError(
-                f'''I do not know how to convert {num} into a numeric value!'''
-            )
+            return (False, term)
+        return (False, term)
 
 
 def handle_literal(term):
-    if is_a_number(term):
-        Data.push(parse_num(term))
+    isnum, num = is_a_number(term)
+
+    if isnum:
+        Data.push(num)
     elif term == "true":
         Data.push(TRUE)
     elif term == "false":
         Data.push(FALSE)
+    else:
+        raise ValueError(f'''I do not know how to handle literal: {term}!''')
 
 
 def handle_term(term, input_list_ref):

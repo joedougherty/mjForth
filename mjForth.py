@@ -234,7 +234,7 @@ def parse_number(token):
     return (False, token)
 
 
-def handle_literal(token):
+def push_literal(token):
     if token == "true":
         new_val = TRUE
     elif token == "false":
@@ -249,7 +249,7 @@ def handle_token(token, input_list_ref):
 
     if token_is_literal:  
         # Push literals on to the Data stack
-        handle_literal(parsed)
+        push_literal(parsed)
     elif token in Words:  
         # token is a Word -- call it!
         call_word(token)

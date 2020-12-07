@@ -210,8 +210,10 @@ def set_or_get_variable(token, input_list_ref):
 ###---###
 
 def is_a_literal(token):
-    if token in ("true", "false"):
-        return (True, token)
+    if token == "true":
+        return (True, TRUE)
+    if token == "false":
+        return (True, FALSE)
 
     try:
         return (True, int(token))
@@ -223,14 +225,6 @@ def is_a_literal(token):
     return (False, token)
 
 
-def push_literal(token):
-    if token == "true":
-        new_val = TRUE
-    elif token == "false":
-        new_val = FALSE
-    else:
-        Data.push(token)
-
 ###---###
 
 def handle_token(token, input_list_ref):
@@ -238,7 +232,7 @@ def handle_token(token, input_list_ref):
 
     if token_is_literal:  
         # Push literals on to the Data stack
-        push_literal(parsed)
+        Data.push(parsed)
     elif token in Words:  
         # token is a Word -- call it!
         call_word(token)

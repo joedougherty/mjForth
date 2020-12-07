@@ -192,8 +192,7 @@ def parse_conditional(input_list_ref):
 
 def declare_variable(varname):
     if varname in Memory:
-        print(f"""{varname} has already been declared.""")
-        return False
+        raise RunTimeError(f"""{varname} has already been declared.""")
 
     Memory[varname] = None
 

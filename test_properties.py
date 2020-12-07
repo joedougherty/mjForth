@@ -4,6 +4,7 @@ import pytest
 
 
 from core import *
+from mjForth import execute_lines
 
 
 from hypothesis import given
@@ -17,7 +18,7 @@ nums = one_of(
 
 
 @given(nums, nums)
-def test_stack_addition_ints(x, y):
+def test_stack_addition(x, y):
     tiny = Stack()
     tiny.push(x)
     tiny.push(y)
@@ -28,10 +29,26 @@ def test_stack_addition_ints(x, y):
 
 
 @given(nums, nums)
-def test_stack_subtraction_ints(x, y):
+def test_stack_subtraction(x, y):
     tiny = Stack()
     tiny.push(x)
     tiny.push(y)
     subtract(Data=tiny)
     assert tiny.height() == 1
     assert tiny.peek() == x - y
+
+
+@given(nums, nums)
+def test_addition_interpreter(x, y):
+    code = f'''{x} {y} +'''
+    execute_lines(code)
+    top_of_stack = Data.peek()
+    assert top_of_stack == x + y
+
+
+@given(nums, nums)
+def test_subtraction_interpreter(x, y):
+    code = f'''{x} {y} - '''
+    execute_lines(code)
+    top_of_stack = Data.peek()
+    assert top_of_stack == x - y

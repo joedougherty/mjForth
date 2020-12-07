@@ -158,7 +158,7 @@ def dot_s(Data=Data):
 
 def words():
     """ List the known words. """
-    print(" ".join[word for word in Words])
+    print(" ".join([word for word in Words]))
 
 
 def greaterthan(Data=Data):

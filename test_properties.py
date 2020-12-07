@@ -7,10 +7,16 @@ from core import *
 
 
 from hypothesis import given
-from hypothesis.strategies import integers, floats, decimals, text, one_of
+from hypothesis.strategies import integers, floats, one_of
 
 
-@given(integers(), integers())
+nums = one_of(
+    integers(), 
+    floats(allow_nan=False, allow_infinity=False)
+)
+
+
+@given(nums, nums)
 def test_stack_addition_ints(x, y):
     tiny = Stack()
     tiny.push(x)
@@ -21,7 +27,7 @@ def test_stack_addition_ints(x, y):
     assert tiny.peek() == y + x
 
 
-@given(integers(), integers())
+@given(nums, nums)
 def test_stack_subtraction_ints(x, y):
     tiny = Stack()
     tiny.push(x)

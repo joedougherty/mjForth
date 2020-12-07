@@ -108,9 +108,8 @@ def define_word(input_list_ref):
 
     for word in body:
         if must_be_defined(word) and word != name:
-            print(f"""You must define `{word}` before invoking it!""")
             input_list_ref.clear()
-            return False
+            raise RunTimeError(f"""You must define `{word}` before invoking it!""")
 
     if name in Words:
         print(f"""`{name}` was redefined.""")

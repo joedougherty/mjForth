@@ -212,13 +212,7 @@ def set_or_get_variable(token, input_list_ref):
 def is_a_literal(token):
     if token in ("true", "false"):
         return (True, token)
-    isnum, num = parse_number(token)
-    if isnum:
-        return (True, num)
-    return (False, token)
 
-
-def parse_number(token):
     try:
         return (True, int(token))
     except ValueError:

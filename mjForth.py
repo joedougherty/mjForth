@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+usr/bin/env python3
 
 # -*- coding: utf-8 -*-
 
@@ -199,13 +199,15 @@ def declare_variable(varname):
 
 def set_or_get_variable(token, input_list_ref):
     next_token = input_list_ref.pop(0)
-    if next_token == "!":
-        Memory[token] = Data.pop()
-    elif next_token == "@":
-        Data.push(Memory[token])
-    else:
+
+    if next_token not in ("!", "@"):
         input_list_ref.clear()
         raise SyntaxError(f'''Was trying to get or set variable '{token}', but line missing ! or @''')
+
+    if next_token == "!":
+        Memory[token] = Data.pop()
+    else: # next_token == "@"
+        Data.push(Memory[token])
 
 ###---###
 

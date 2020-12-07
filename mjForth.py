@@ -45,10 +45,6 @@ RESERVED = (
 )
 
 
-def welcome():
-    print(f"""mjForth {__version__}, Copyright (C) 2018-2020 Joe Dougherty.""")
-
-
 def takewhile_and_pop(match_token, list_of_tokens):
     """
     Remove tokens from the list_of_tokens until the match_token
@@ -304,7 +300,7 @@ def read_dictionary():
 
 
 def main():
-    welcome()
+    print(f"""mjForth {__version__}, Copyright (C) 2018-2020 Joe Dougherty.""")
 
     history = InMemoryHistory()
 

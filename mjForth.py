@@ -330,7 +330,7 @@ def execute_file(abs_path_to_file):
     with open(abs_path_to_file, "r") as f:
         lines = [l.strip() for l in f.readlines()]
 
-    execute_lines(lines)
+    run(lines)
 
 
 if __name__ == "__main__":

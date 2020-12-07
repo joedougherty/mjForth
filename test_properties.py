@@ -4,7 +4,7 @@ import pytest
 
 
 from core import *
-from mjForth import execute_lines
+from mjForth import run
 
 
 from hypothesis import given
@@ -41,7 +41,7 @@ def test_stack_subtraction(x, y):
 @given(nums, nums)
 def test_addition_interpreter(x, y):
     code = f'''{x} {y} +'''
-    execute_lines(code)
+    run(code)
     top_of_stack = Data.peek()
     assert top_of_stack == x + y
 
@@ -49,7 +49,7 @@ def test_addition_interpreter(x, y):
 @given(nums, nums)
 def test_subtraction_interpreter(x, y):
     code = f'''{x} {y} - '''
-    execute_lines(code)
+    run(code)
     top_of_stack = Data.peek()
     assert top_of_stack == x - y
 
@@ -57,7 +57,7 @@ def test_subtraction_interpreter(x, y):
 @given(nums, nums)
 def test_swap_interpreter(x, y):
     code = f'''{x} {y} swap'''
-    execute_lines(code)
+    run(code)
     top_of_stack, just_below = Data.peek(), Data.peek(-2)
     assert top_of_stack == x
     assert just_below == y

@@ -3,7 +3,7 @@
 import pytest
 
 
-from mjForth import run, Data, Memory
+from mjForth import run, Data, Memory, execute_file
 
 
 def test_simple():
@@ -66,3 +66,13 @@ def test_word():
     run("6 fac_rec")
     assert Data.height() == 1
     assert Data.peek() == 720
+
+
+def test_exec_fib_sample_program():
+    Data.clear()
+
+    execute_file('examples/10fibs.fs')
+
+    assert Data.height() == 10
+    assert Data.peek() == 55
+    assert Data.peek(-10) == 1

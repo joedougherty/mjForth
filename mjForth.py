@@ -91,7 +91,7 @@ def define_word(input_list_ref):
 
     If the remaining input string can't be parsed:
         * input_list_ref will be .clear()'ed
-        * return False
+        * raise SyntaxError
     """
     name = input_list_ref.pop(0)
 

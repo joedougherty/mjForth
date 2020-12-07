@@ -245,9 +245,9 @@ def handle_literal(token):
 ###---###
 
 def handle_token(token, input_list_ref):
-    is_literal, parsed = is_a_literal(token)
+    token_is_literal, parsed = is_a_literal(token)
 
-    if is_literal:  
+    if token_is_literal:  
         # Push literals on to the Data stack
         handle_literal(parsed)
     elif token in Words:  

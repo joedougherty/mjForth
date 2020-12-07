@@ -76,7 +76,7 @@ def must_be_defined(word):
         word not in Words
         and word not in Memory
         and word not in RESERVED
-        and not is_a_literal(word)
+        and not is_a_literal(word)[0]
     )
 
 
@@ -215,7 +215,12 @@ def set_or_get_variable(token, input_list_ref):
 ###---###
 
 def is_a_literal(token):
-    return parse_number(token)[0] or token in ("true", "false")
+    if token in ("true", "false"):
+        return (True, token)
+    isnum, num = parse_number(token)
+    if isnum:
+        return (True, num)
+    return (False, token)
 
 
 def parse_number(token):
@@ -235,19 +240,19 @@ def handle_literal(token):
     elif token == "false":
         new_val = FALSE
     else:
-        _, new_val = parse_number(token)
-
-    Data.push(new_val)
+        Data.push(token)
 
 ###---###
 
 def handle_token(token, input_list_ref):
-    if token in Words:  
+    is_literal, parsed = is_a_literal(token)
+
+    if is_literal:  
+        # Push literals on to the Data stack
+        handle_literal(parsed)
+    elif token in Words:  
         # token is a Word -- call it!
         call_word(token)
-    elif is_a_literal(token):  
-        # Push literals on to the Data stack
-        handle_literal(token)
     elif token in Memory:  
         # Get a variable definition, or redefine existing variable
         set_or_get_variable(token, input_list_ref)

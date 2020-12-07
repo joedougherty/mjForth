@@ -70,6 +70,7 @@ def takewhile_and_pop(match_token, list_of_tokens):
     list_of_tokens.pop(0)  # Remove matching character
     return tw
 
+###---###
 
 def must_be_defined(word):
     return (
@@ -142,6 +143,7 @@ def call_word(word):
     else:
         raise RunTimeError(f"""{word} is neither a function nor a list of words!""")
 
+###---###
 
 def resolve_iterator(i, fn_body_as_word_list):
     """
@@ -192,6 +194,7 @@ def parse_conditional(input_list_ref):
         else:
             consume_tokens(otherwise)
 
+###---###
 
 def declare_variable(varname):
     if varname in Memory:
@@ -211,6 +214,7 @@ def set_or_get_variable(token, input_list_ref):
         input_list_ref.clear()
         raise SyntaxError(f'''Was trying to get or set variable '{token}', but line missing ! or @''')
 
+###---###
 
 def is_a_literal(token):
     return parse_number(token)[0] or token in ("true", "false")
@@ -237,6 +241,7 @@ def handle_literal(token):
 
     Data.push(new_val)
 
+###---###
 
 def handle_token(token, input_list_ref):
     if token in Words:  
@@ -271,6 +276,7 @@ def handle_token(token, input_list_ref):
     else:
         raise SyntaxError(f"""I don't know what to do with `{token}` !!!""")
 
+###---###
 
 def tokenize(input_line):
     input_line = (

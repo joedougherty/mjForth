@@ -1,4 +1,4 @@
-usr/bin/env python3
+#!/usr/bin/env python3
 
 # -*- coding: utf-8 -*-
 
@@ -45,7 +45,7 @@ RESERVED = (
 )
 
 
-def takewhile_and_pop(match_token, list_of_tokens):
+def takewhile_and_pop(from_token, match_token, list_of_tokens):
     """
     Remove tokens from the list_of_tokens until the match_token
     is encountered.
@@ -55,7 +55,8 @@ def takewhile_and_pop(match_token, list_of_tokens):
     """
     if match_token not in list_of_tokens:
         raise SyntaxError(
-            f"""Expected to encounter '{match_token}'!"""
+            f'''Expected to encounter '{match_token}' in expression: \n'''
+            f'''{from_token} {" ".join(list_of_tokens)}'''
         )
 
     tw = [i for i in takewhile(lambda t: t != match_token, list_of_tokens)]
@@ -90,16 +91,14 @@ def define_word(input_list_ref):
         * raise SyntaxError
     """
     name = input_list_ref.pop(0)
+    next_token = input_list_ref.pop(0)  # Pop (
 
-    if input_list_ref[0] != "(":
-        msg = f"""Name must be followed by paren docs. Was trying to define: `{name}`."""
-        input_list_ref.clear()
-        raise SyntaxError(msg)
+    if next_token != "(":
+        input_list.clear()
+        raise SyntaxError("definitions need a stack comment in ( )!")
 
-    input_list_ref.pop(0)  # Pop (
-
-    comment = takewhile_and_pop(")", input_list_ref)
-    body = takewhile_and_pop(";", input_list_ref)
+    comment = takewhile_and_pop("(", ")", input_list_ref)
+    body = takewhile_and_pop(":", ";", input_list_ref)
 
     for word in body:
         if must_be_defined(word) and word != name:
@@ -162,7 +161,7 @@ def run_doloop(word_list):
 
 # https://www.complang.tuwien.ac.at/forth/gforth/Docs-html/Simple-Loops.html#Simple-Loops
 def run_whileloop(while_loop_body):
-    code1_and_flag = takewhile_and_pop("WHILE", while_loop_body)
+    code1_and_flag = takewhile_and_pop("WHILE", "REPEAT", while_loop_body)
     code2 = while_loop_body
 
     flag_value = TRUE
@@ -175,13 +174,13 @@ def run_whileloop(while_loop_body):
 
 
 def parse_conditional(input_list_ref):
-    cond_body = takewhile_and_pop("ENDIF", input_list_ref)
+    cond_body = takewhile_and_pop("IF", "ENDIF", input_list_ref)
     if "ELSE" not in cond_body:
         # This is a simple statement. No ELSE to contend with.
         if Data.pop() == TRUE:
             consume_tokens(cond_body)
     else:
-        iftrue = takewhile_and_pop("ELSE", cond_body)
+        iftrue = takewhile_and_pop("IF", "ELSE", cond_body)
         otherwise = cond_body
         if Data.pop() == TRUE:
             consume_tokens(iftrue)
@@ -249,11 +248,11 @@ def handle_token(token, input_list_ref):
         define_word(input_list_ref)
     elif token == "?DO":  
         # Execute DO loop
-        doloop_body = takewhile_and_pop("LOOP", input_list_ref)
+        doloop_body = takewhile_and_pop("?DO", "LOOP", input_list_ref)
         run_doloop(doloop_body)
     elif token == "BEGIN":  
         # Execute WHILE loop
-        whileloop_body = takewhile_and_pop("REPEAT", input_list_ref)
+        whileloop_body = takewhile_and_pop("BEGIN", "WHILE", input_list_ref)
         run_whileloop(whileloop_body)
     elif token == "IF":  
         # Handle Conditionals

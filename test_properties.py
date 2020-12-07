@@ -52,3 +52,13 @@ def test_subtraction_interpreter(x, y):
     execute_lines(code)
     top_of_stack = Data.peek()
     assert top_of_stack == x - y
+
+
+@given(nums, nums)
+def test_swap_interpreter(x, y):
+    code = f'''{x} {y} swap'''
+    execute_lines(code)
+    top_of_stack, just_below = Data.peek(), Data.peek(-2)
+    assert top_of_stack == x
+    assert just_below == y
+    

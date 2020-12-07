@@ -58,10 +58,9 @@ def takewhile_and_pop(match_token, list_of_tokens):
     tokens from list_of_tokens.
     """
     if match_token not in list_of_tokens:
-        print(
-            f"""Expected to encounter '{match_token}', but did not see it in list_of_tokens!"""
+        raise SyntaxError(
+            f"""Expected to encounter '{match_token}'!"""
         )
-        return False
 
     tw = [i for i in takewhile(lambda t: t != match_token, list_of_tokens)]
 

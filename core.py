@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from collections import namedtuple
 from copy import copy
 import operator
 import sys
@@ -53,6 +54,9 @@ class Stack:
 
     def clear(self):
         self.contents.clear()
+
+        
+Word = namedtuple('Word', ['doc', 'definition'])
 
 
 TRUE = -1
@@ -225,41 +229,37 @@ def _max(Data=Data):
     Data.push(max([Data.pop(), Data.pop()]))
 
 
-def wordify(word_as_fn):
-    return {"doc": word_as_fn.__doc__, "fn": word_as_fn}
-
-
 Words = {
-    "exit": {"doc": "Exits the session.", "fn": sys.exit},
-    "+": wordify(add),
-    "-": wordify(subtract),
-    "*": wordify(multiply),
-    "/": wordify(divide),
-    "mod": wordify(mod),
-    "drop": wordify(drop),
-    "swap": wordify(swap),
-    "dup": wordify(dup),
-    "over": wordify(over),
-    "rot": wordify(rot),
-    "nip": wordify(nip),
-    "tuck": wordify(tuck),
-    ".": wordify(dot),
-    ".s": wordify(dot_s),
-    "words": wordify(words),
-    "clear": wordify(clear),
-    "0=": wordify(equals_zero),
-    "0>": wordify(greater_than_zero),
-    "=": wordify(equals),
-    ">": wordify(greaterthan),
-    "<": wordify(lessthan),
-    "1-": wordify(minusone),
-    "1+": wordify(plusone),
-    "showmem": wordify(showmem),
-    "negate": wordify(negate),
-    "abs": wordify(_abs),
-    "min": wordify(_min),
-    "max": wordify(_max),
-    "^esc": {"doc": "IPython escape hatch.", "fn": embed},
+    "exit": Word("Exits the session.", sys.exit),
+    "+": Word(add.__doc__, add),
+    "-": Word(subtract.__doc__, subtract),
+    "*": Word(multiply.__doc__, multiply),
+    "/": Word(divide.__doc__, divide),
+    "mod": Word(mod.__doc__, mod),
+    "drop": Word(drop.__doc__, drop),
+    "swap": Word(swap.__doc__, swap),
+    "dup": Word(dup.__doc__, dup),
+    "over": Word(over.__doc__, over),
+    "rot": Word(rot.__doc__, rot),
+    "nip": Word(nip.__doc__, nip),
+    "tuck": Word(tuck.__doc__, tuck),
+    ".": Word(dot.__doc__, dot),
+    ".s": Word(dot_s.__doc__, dot_s),
+    "words": Word(words.__doc__, words),
+    "clear": Word(clear.__doc__, clear),
+    "0=": Word(equals_zero.__doc__, equals_zero),
+    "0>": Word(greater_than_zero.__doc__, greater_than_zero),
+    "=": Word(equals.__doc__, equals),
+    ">": Word(greaterthan.__doc__, greaterthan),
+    "<": Word(lessthan.__doc__, lessthan),
+    "1-": Word(minusone.__doc__, minusone),
+    "1+": Word(plusone.__doc__, plusone),
+    "showmem": Word(showmem.__doc__, showmem),
+    "negate": Word(negate.__doc__, negate),
+    "abs": Word(_abs.__doc__, _abs),
+    "min": Word(_min.__doc__, _min),
+    "max": Word(_max.__doc__, _max),
+    "^esc": Word("IPython escape hatch.", embed),
 }
 
 # Aliases

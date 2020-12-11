@@ -3,7 +3,7 @@
 # -*- coding: utf-8 -*-
 
 
-from core import Data, TRUE, FALSE, Memory, Words
+from core import Data, TRUE, FALSE, Memory, Words, Word
 
 from copy import copy
 from itertools import takewhile
@@ -105,29 +105,29 @@ def define_word(input_list_ref):
             input_list_ref.clear()
             raise RunTimeError(f"""You must define `{word}` before invoking it!""")
 
-    if name in Words:
+    if name in Words.keys():
         print(f"""`{name}` was redefined.""")
 
-    Words[name] = {"doc": comment, "fn": body}
+    Words[name] = Word(comment, body) 
 
 
 def show_definition(word):
-    doc, fn = Words[word]["doc"], Words[word]["fn"]
+    doc, definition = Words[word].doc, Words[word].definition
 
     if isinstance(doc, list):
         doc = " ".join([str(i) for i in doc])
 
-    if callable(fn):
-        print(f"""  {fn.__name__} [built-in]""")
-    elif isinstance(fn, list):
-        joined_fn = " ".join(fn)
-        print(f""": {word}\n  ( {doc} )\n  {joined_fn} ; """)
+    if callable(definition):
+        print(f"""  {definition.__name__} [built-in]""")
+    elif isinstance(definition, list):
+        joined_def = " ".join(definition)
+        print(f""": {word}\n  ( {doc} )\n  {joined_def} ; """)
     else:
         print(f"""{word} has not been defined!""")
 
 
 def call_word(word):
-    fn = Words[word]["fn"]
+    fn = Words[word].definition
 
     if callable(fn):
         fn()
@@ -234,7 +234,7 @@ def handle_token(token, input_list_ref):
     if token_is_literal:  
         # Push literals on to the Data stack
         Data.push(parsed)
-    elif token in Words:  
+    elif token in Words.keys():  
         # token is a Word -- call it!
         call_word(token)
     elif token in Memory:  

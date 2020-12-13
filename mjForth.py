@@ -66,9 +66,7 @@ def take_tokens(from_token, match_token, input_stream):
 
     return agg
 
-
 ###---###
-
 
 def must_be_defined(word):
     return (
@@ -132,9 +130,7 @@ def call_word(word):
     elif isinstance(fn, list):
         consume_tokens(copy(fn))
 
-
 ###---###
-
 
 def _resolve_iterator(i, fn_body_as_word_list):
     """
@@ -171,7 +167,7 @@ def run_whileloop(while_loop_body):
             flag_value = FALSE
 
 
-def parse_conditional(input_stream):
+def run_conditional(input_stream):
     cond_body = take_tokens("IF", "ENDIF", input_stream)
     if "ELSE" not in cond_body:
         # This is a simple statement. No ELSE to contend with.
@@ -185,9 +181,7 @@ def parse_conditional(input_stream):
         else:
             consume_tokens(otherwise)
 
-
 ###---###
-
 
 def declare_variable(varname):
     if varname in Memory.keys():
@@ -210,9 +204,7 @@ def set_or_get_variable(token, input_stream):
     else:  # next_token == "@"
         Data.push(Memory[token])
 
-
 ###---###
-
 
 def is_a_literal(token):
     if token == "true":
@@ -229,9 +221,7 @@ def is_a_literal(token):
             return (False, token)
     return (False, token)
 
-
 ###---###
-
 
 def handle_token(token, input_stream):
     token_is_literal, parsed = is_a_literal(token)
@@ -261,16 +251,14 @@ def handle_token(token, input_stream):
         run_whileloop(whileloop_body)
     elif token == "IF":
         # Handle Conditionals
-        parse_conditional(input_stream)
+        run_conditional(input_stream)
     elif token == "variable":
         # Declare the existence of a new variable in Memory
         declare_variable(next(input_stream))
     else:
         raise SyntaxError(f"""I don't know what to do with `{token}` !!!""")
 
-
 ###---###
-
 
 class InputStream:
     def __init__(self, input_list):

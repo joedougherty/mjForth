@@ -101,8 +101,6 @@ def take_tokens(from_token, match_token, input_stream):
     if isinstance(input_stream, InputStream):
         input_list = input_stream._contents
     elif isinstance(input_stream, list):
-        print('found!')
-        print(input_stream)
         input_list = input_stream
 
     agg = []

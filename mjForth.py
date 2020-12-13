@@ -40,6 +40,7 @@ class RunTimeError(Exception):
 
 
 class InputStream:
+    ''' A thin wrapper around a token list. '''
     def __init__(self, input_list):
         self._contents = input_list
 
@@ -48,6 +49,12 @@ class InputStream:
 
     def clear(self):
         self._contents.clear()
+
+    def take(self, n):
+        agg = []
+        for i in range(0,n):
+            agg.append(next(self))
+        return agg
 
     def __iter__(self):
         return iter(self._contents)
@@ -118,14 +125,14 @@ def must_be_defined(word):
         and not is_a_literal(word)[0]
     )
 
+
 def define_word(input_stream):
     """
     Extract the name, paren comment, and body for the word being defined.
     """
-    name = next(input_stream)
-    next_token = next(input_stream)  # Pop (
+    name, open_paren = input_stream.take(2)
 
-    if next_token != "(":
+    if open_paren != "(":
         input_stream.clear()
         raise SyntaxError("definitions need a stack comment in ( )!")
 
@@ -148,10 +155,10 @@ def define_word(input_stream):
 
 
 def show_definition(word):
-    try:
-        doc, definition = Words[word].doc, Words[word].definition
-    except KeyError:
+    if word not in Words.keys():
         raise RunTimeError(f"""`{word}` has not been defined!""")
+
+    doc, definition = Words[word].doc, Words[word].definition
 
     if isinstance(doc, list):
         doc = " ".join([str(i) for i in doc])
@@ -163,17 +170,19 @@ def show_definition(word):
 
 
 def call_word(word):
-    try:
-        fn = Words[word].definition
-    except KeyError:
-        raise RunTimeError(
-            f"""{word} is neither a function nor a list of words!"""
-        )
+    if word not in Words.keys():
+        raise RunTimeError(f"""`{word}` has not been defined!""")
+
+    fn = Words[word].definition
 
     if callable(fn):
         fn()
     elif isinstance(fn, list):
         consume_tokens(copy(fn))
+    else:
+        raise RunTimeError(
+            f'''{fn} was neither callable or list of words!'''
+        )
 
 ###-----------------------------------------------------------------###
 #   Section 3: for loops, while loops, conditionals 

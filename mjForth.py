@@ -127,9 +127,10 @@ def must_be_defined(word):
 
 
 def define_word(input_stream):
-    """
-    Extract the name, paren comment, and body for the word being defined.
-    """
+    ''' 
+    Extract the name, paren comment, and body for the word. 
+    Add the newly compiled word to Words.
+    '''
     name, open_paren = input_stream.take(2)
 
     if open_paren != "(":

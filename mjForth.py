@@ -12,7 +12,7 @@ import readline
 import sys
 
 from prompt_toolkit import prompt
-from prompt_toolkit.history import InMemoryHistory
+from prompt_toolkit.history import FileHistory
 from prompt_toolkit.completion import WordCompleter
 
 
@@ -105,10 +105,12 @@ def define_word(input_list_ref):
             input_list_ref.clear()
             raise RunTimeError(f"""You must define `{word}` before invoking it!""")
 
-    if name in Words.keys():
-        print(f"""`{name}` was redefined.""")
+    redefined = name in Words.keys()
 
     Words[name] = Word(comment, body) 
+
+    if redefined:
+        print(f"""`{name}` was redefined.""")
 
 
 def show_definition(word):
@@ -120,8 +122,7 @@ def show_definition(word):
     if callable(definition):
         print(f"""  {definition.__name__} [built-in]""")
     elif isinstance(definition, list):
-        joined_def = " ".join(definition)
-        print(f""": {word}\n  ( {doc} )\n  {joined_def} ; """)
+        print(f""": {word}\n  ( {doc} )\n  {" ".join(definition)} ; """)
     else:
         print(f"""{word} has not been defined!""")
 
@@ -292,7 +293,7 @@ def main():
                 tokenize(
                     prompt(
                         "mjF> ", 
-                        history=InMemoryHistory(), 
+                        history=FileHistory('.mjForth_history'), 
                         completer=WordCompleter(list(Words.keys()) + ["see", "variable"])
                     )
                 )

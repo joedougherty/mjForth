@@ -22,6 +22,29 @@ class RunTimeError(Exception):
     pass
 
 
+class InputStream:
+    def __init__(self, input_list):
+        self._contents = input_list
+
+    def has_tokens(self):
+        return len(self._contents) >= 1
+
+    def clear(self):
+        self._contents.clear()
+
+    def __iter__(self):
+        return iter(self._contents)
+
+    def __next__(self):
+        try:
+            return self._contents.pop(0)
+        except IndexError:
+            raise RunTimeError("Empty stack")
+
+    def __contains__(self, value):
+        return value in self._contents
+
+
 RESERVED = (
     "?DO",
     "i",
@@ -259,29 +282,6 @@ def handle_token(token, input_stream):
         raise SyntaxError(f"""I don't know what to do with `{token}` !!!""")
 
 ###---###
-
-class InputStream:
-    def __init__(self, input_list):
-        self._contents = input_list
-
-    def has_tokens(self):
-        return len(self._contents) >= 1
-
-    def clear(self):
-        self._contents.clear()
-
-    def __iter__(self):
-        return iter(self._contents)
-
-    def __next__(self):
-        try:
-            return self._contents.pop(0)
-        except IndexError:
-            raise RunTimeError("Empty stack")
-
-    def __contains__(self, value):
-        return value in self._contents
-
 
 def tokenize(input_line):
     input_line = (

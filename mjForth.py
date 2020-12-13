@@ -70,8 +70,8 @@ def takewhile_and_pop(from_token, match_token, list_of_tokens):
 
 def must_be_defined(word):
     return (
-        word not in Words
-        and word not in Memory
+        word not in Words.keys()
+        and word not in Memory.keys()
         and word not in RESERVED
         and not is_a_literal(word)[0]
     )
@@ -138,7 +138,7 @@ def call_word(word):
 
 ###---###
 
-def resolve_iterator(i, fn_body_as_word_list):
+def _resolve_iterator(i, fn_body_as_word_list):
     """
     Given an input list as fn_body_as_word_list,
     replace instances of 'i' with a string version
@@ -155,7 +155,7 @@ def run_doloop(word_list):
     _from, _to = Data.pop(), Data.pop()
 
     for i in range(_from, _to):
-        input_list = resolve_iterator(i, copy(word_list))
+        input_list = _resolve_iterator(i, copy(word_list))
         consume_tokens(input_list)
 
 
@@ -190,7 +190,7 @@ def parse_conditional(input_list_ref):
 ###---###
 
 def declare_variable(varname):
-    if varname in Memory:
+    if varname in Memory.keys():
         raise RunTimeError(f"""{varname} has already been declared.""")
 
     Memory[varname] = None
@@ -237,8 +237,8 @@ def handle_token(token, input_list_ref):
     elif token in Words.keys():  
         # token is a Word -- call it!
         call_word(token)
-    elif token in Memory:  
-        # Get a variable definition, or redefine existing variable
+    elif token in Memory.keys():  
+        # Get a variable definition or redefine existing variable
         set_or_get_variable(token, input_list_ref)
     elif token == "see":  
         # Show a Word's definition
@@ -283,19 +283,19 @@ def consume_tokens(input_list):
         handle_token(token, input_list)
 
 
-def read_dictionary():
-    return WordCompleter(list(Words.keys()) + ["see", "variable"])
-
-
 def main():
     print(f"""mjForth {__version__}, Copyright (C) 2018-2020 Joe Dougherty.""")
-
-    history = InMemoryHistory()
 
     while True:
         try:
             consume_tokens(
-                tokenize(prompt("mjF> ", history=history, completer=read_dictionary()))
+                tokenize(
+                    prompt(
+                        "mjF> ", 
+                        history=InMemoryHistory(), 
+                        completer=WordCompleter(list(Words.keys()) + ["see", "variable"])
+                    )
+                )
             )
             print(f"""ok <{Data.height()}>""")
         except KeyboardInterrupt:

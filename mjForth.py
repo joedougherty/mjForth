@@ -6,7 +6,6 @@
 from core import Data, TRUE, FALSE, Memory, Words, Word
 
 from copy import copy
-from itertools import takewhile
 import os
 import readline
 import sys
@@ -45,26 +44,27 @@ RESERVED = (
 )
 
 
-def takewhile_and_pop(from_token, match_token, list_of_tokens):
-    """
-    Remove tokens from the list_of_tokens until the match_token
-    is encountered.
-
-    Return the matched tokens as a new list. Remove the applicable
-    tokens from list_of_tokens.
-    """
-    if match_token not in list_of_tokens:
+def take_tokens(from_token, match_token, input_stream):
+    if match_token not in input_stream:
         raise SyntaxError(
             f'''Expected to encounter '{match_token}' in expression: \n'''
             f'''{from_token} {" ".join(list_of_tokens)}'''
         )
 
-    tw = [i for i in takewhile(lambda t: t != match_token, list_of_tokens)]
+    if isinstance(input_stream, InputStream):
+        input_list = input_stream._contents
+    elif isinstance(input_stream, list):
+        input_list = input_stream
 
-    for found_item in tw:
-        list_of_tokens.pop(0)
-    list_of_tokens.pop(0)  # Remove matching character
-    return tw
+    agg = []
+    while input_list:
+        token = input_list.pop(0)
+        if token == match_token:
+            break
+        else:
+            agg.append(token)
+
+    return agg
 
 ###---###
 
@@ -77,32 +77,23 @@ def must_be_defined(word):
     )
 
 
-def define_word(input_list_ref):
+def define_word(input_stream):
     """
     Extract the name, paren comment, and body for the word being defined.
-
-    This function will be called if the preceding token is ':'
-
-    If the input string can be parsed:
-        * the newly defined word will added to Words
-
-    If the remaining input string can't be parsed:
-        * input_list_ref will be .clear()'ed
-        * raise SyntaxError
     """
-    name = input_list_ref.pop(0)
-    next_token = input_list_ref.pop(0)  # Pop (
+    name = next(input_stream)
+    next_token = next(input_stream)  # Pop (
 
     if next_token != "(":
-        input_list.clear()
+        input_stream.clear()
         raise SyntaxError("definitions need a stack comment in ( )!")
 
-    comment = takewhile_and_pop("(", ")", input_list_ref)
-    body = takewhile_and_pop(":", ";", input_list_ref)
+    comment = take_tokens("(", ")", input_stream)
+    body = take_tokens(":", ";", input_stream)
 
     for word in body:
         if must_be_defined(word) and word != name:
-            input_list_ref.clear()
+            input_stream.clear()
             raise RunTimeError(f"""You must define `{word}` before invoking it!""")
 
     redefined = name in Words.keys()
@@ -114,7 +105,10 @@ def define_word(input_list_ref):
 
 
 def show_definition(word):
-    doc, definition = Words[word].doc, Words[word].definition
+    try:
+        doc, definition = Words[word].doc, Words[word].definition
+    except KeyError:
+        raise RunTimeError(f"""`{word}` has not been defined!""")
 
     if isinstance(doc, list):
         doc = " ".join([str(i) for i in doc])
@@ -123,19 +117,18 @@ def show_definition(word):
         print(f"""  {definition.__name__} [built-in]""")
     elif isinstance(definition, list):
         print(f""": {word}\n  ( {doc} )\n  {" ".join(definition)} ; """)
-    else:
-        print(f"""{word} has not been defined!""")
 
 
 def call_word(word):
-    fn = Words[word].definition
-
+    try:
+        fn = Words[word].definition
+    except KeyError:
+        raise RunTimeError(f"""{word} is neither a function nor a list of words!""")
+        
     if callable(fn):
         fn()
     elif isinstance(fn, list):
         consume_tokens(copy(fn))
-    else:
-        raise RunTimeError(f"""{word} is neither a function nor a list of words!""")
 
 ###---###
 
@@ -162,7 +155,7 @@ def run_doloop(word_list):
 
 # https://www.complang.tuwien.ac.at/forth/gforth/Docs-html/Simple-Loops.html#Simple-Loops
 def run_whileloop(while_loop_body):
-    code1_and_flag = takewhile_and_pop("WHILE", "REPEAT", while_loop_body)
+    code1_and_flag = take_tokens("WHILE", "REPEAT", while_loop_body)
     code2 = while_loop_body
 
     flag_value = TRUE
@@ -174,14 +167,14 @@ def run_whileloop(while_loop_body):
             flag_value = FALSE
 
 
-def parse_conditional(input_list_ref):
-    cond_body = takewhile_and_pop("IF", "ENDIF", input_list_ref)
+def parse_conditional(input_stream):
+    cond_body = take_tokens("IF", "ENDIF", input_stream)
     if "ELSE" not in cond_body:
         # This is a simple statement. No ELSE to contend with.
         if Data.pop() == TRUE:
             consume_tokens(cond_body)
     else:
-        iftrue = takewhile_and_pop("IF", "ELSE", cond_body)
+        iftrue = take_tokens("IF", "ELSE", cond_body)
         otherwise = cond_body
         if Data.pop() == TRUE:
             consume_tokens(iftrue)
@@ -197,11 +190,11 @@ def declare_variable(varname):
     Memory[varname] = None
 
 
-def set_or_get_variable(token, input_list_ref):
-    next_token = input_list_ref.pop(0)
+def set_or_get_variable(token, input_stream):
+    next_token = next(input_stream)
 
     if next_token not in ("!", "@"):
-        input_list_ref.clear()
+        input_stream.clear()
         raise SyntaxError(f'''Was trying to get or set variable '{token}', but line missing ! or @''')
 
     if next_token == "!":
@@ -229,7 +222,7 @@ def is_a_literal(token):
 
 ###---###
 
-def handle_token(token, input_list_ref):
+def handle_token(token, input_stream):
     token_is_literal, parsed = is_a_literal(token)
 
     if token_is_literal:  
@@ -240,31 +233,55 @@ def handle_token(token, input_list_ref):
         call_word(token)
     elif token in Memory.keys():  
         # Get a variable definition or redefine existing variable
-        set_or_get_variable(token, input_list_ref)
+        set_or_get_variable(token, input_stream)
     elif token == "see":  
         # Show a Word's definition
-        show_definition(input_list_ref.pop(0))
+        show_definition(next(input_stream))
     elif token == ":":  
         # Define a new Word
-        define_word(input_list_ref)
+        define_word(input_stream)
     elif token == "?DO":  
         # Execute DO loop
-        doloop_body = takewhile_and_pop("?DO", "LOOP", input_list_ref)
+        doloop_body = take_tokens("?DO", "LOOP", input_stream)
         run_doloop(doloop_body)
     elif token == "BEGIN":  
         # Execute WHILE loop
-        whileloop_body = takewhile_and_pop("BEGIN", "WHILE", input_list_ref)
+        whileloop_body = take_tokens("BEGIN", "WHILE", input_stream)
         run_whileloop(whileloop_body)
     elif token == "IF":  
         # Handle Conditionals
-        parse_conditional(input_list_ref)
+        parse_conditional(input_stream)
     elif token == "variable":  
         # Declare the existence of a new variable in Memory
-        declare_variable(input_list_ref.pop(0))
+        declare_variable(next(input_stream))
     else:
         raise SyntaxError(f"""I don't know what to do with `{token}` !!!""")
 
 ###---###
+
+
+class InputStream:
+    def __init__(self, input_list):
+        self._contents = input_list
+
+    def has_tokens(self):
+        return len(self._contents) >= 1
+
+    def clear(self):
+        self._contents.clear()
+
+    def __iter__(self): 
+        return iter(self._contents)
+    
+    def __next__(self):
+        try:
+            return self._contents.pop(0)
+        except IndexError:
+            raise RunTimeError("Empty stack")
+
+    def __contains__(self, value):
+        return value in self._contents
+
 
 def tokenize(input_line):
     input_line = (
@@ -279,9 +296,14 @@ def tokenize(input_line):
 
 
 def consume_tokens(input_list):
-    while input_list:
-        token = input_list.pop(0)
-        handle_token(token, input_list)
+    if isinstance(input_list, InputStream):
+        input_stream = input_list
+    else:
+        input_stream = InputStream(input_list)
+
+    while input_stream.has_tokens():
+        token = next(input_stream)
+        handle_token(token, input_stream)
 
 
 def main():

@@ -2,7 +2,24 @@
 
 # -*- coding: utf-8 -*-
 
+###-----------------------------------------------------------------###
+#
+#   Table of Contents
+#   =================
+#
+#   Section 1: imports, custom classes/exceptions, reserved words
+#   Section 2: definining words, calling words
+#   Section 3: for loops, while loops, if/endif, if/else/endif
+#   Section 4: variable declaration, setting, retrieval 
+#   Section 5: token parsing and handling 
+#   Section 6: run the main() loop, tokenize() -> consume_tokens()
+#
+###-----------------------------------------------------------------###
 
+
+###-----------------------------------------------------------------###
+#   Section 1: imports, custom classes/exceptions, reserved words
+###-----------------------------------------------------------------###
 from core import Data, TRUE, FALSE, Memory, Words, Word
 
 from copy import copy
@@ -89,8 +106,10 @@ def take_tokens(from_token, match_token, input_stream):
 
     return agg
 
-###---###
 
+###-----------------------------------------------------------------###
+#   Section 2: Words
+###-----------------------------------------------------------------###
 def must_be_defined(word):
     return (
         word not in Words.keys()
@@ -98,7 +117,6 @@ def must_be_defined(word):
         and word not in RESERVED
         and not is_a_literal(word)[0]
     )
-
 
 def define_word(input_stream):
     """
@@ -117,7 +135,9 @@ def define_word(input_stream):
     for word in body:
         if must_be_defined(word) and word != name:
             input_stream.clear()
-            raise RunTimeError(f"""You must define `{word}` before invoking it!""")
+            raise RunTimeError(
+                f"""You must define `{word}` before invoking it!"""
+            )
 
     redefined = name in Words.keys()
 
@@ -146,15 +166,18 @@ def call_word(word):
     try:
         fn = Words[word].definition
     except KeyError:
-        raise RunTimeError(f"""{word} is neither a function nor a list of words!""")
+        raise RunTimeError(
+            f"""{word} is neither a function nor a list of words!"""
+        )
 
     if callable(fn):
         fn()
     elif isinstance(fn, list):
         consume_tokens(copy(fn))
 
-###---###
-
+###-----------------------------------------------------------------###
+#   Section 3: for loops, while loops, conditionals 
+###-----------------------------------------------------------------###
 def _resolve_iterator(i, fn_body_as_word_list):
     """
     Given an input list as fn_body_as_word_list,
@@ -204,8 +227,9 @@ def run_conditional(input_stream):
         else:
             consume_tokens(otherwise)
 
-###---###
-
+###-----------------------------------------------------------------###
+#   Section 4: variable declaration, setting, retrieval 
+###-----------------------------------------------------------------###
 def declare_variable(varname):
     if varname in Memory.keys():
         raise RunTimeError(f"""{varname} has already been declared.""")
@@ -219,7 +243,7 @@ def set_or_get_variable(token, input_stream):
     if next_token not in ("!", "@"):
         input_stream.clear()
         raise SyntaxError(
-            f"""Was trying to get or set variable '{token}', but line missing ! or @"""
+            f"""Was trying to get or set '{token}', but missing ! or @"""
         )
 
     if next_token == "!":
@@ -227,8 +251,9 @@ def set_or_get_variable(token, input_stream):
     else:  # next_token == "@"
         Data.push(Memory[token])
 
-###---###
-
+###-----------------------------------------------------------------###
+#   Section 5: token parsing and handling 
+###-----------------------------------------------------------------###
 def is_a_literal(token):
     if token == "true":
         return (True, TRUE)
@@ -244,7 +269,6 @@ def is_a_literal(token):
             return (False, token)
     return (False, token)
 
-###---###
 
 def handle_token(token, input_stream):
     token_is_literal, parsed = is_a_literal(token)
@@ -279,10 +303,13 @@ def handle_token(token, input_stream):
         # Declare the existence of a new variable in Memory
         declare_variable(next(input_stream))
     else:
-        raise SyntaxError(f"""I don't know what to do with `{token}` !!!""")
+        raise SyntaxError(
+            f"""I don't know what to do with `{token}` !!!"""
+        )
 
-###---###
-
+###-----------------------------------------------------------------###
+#   Section 6: run the main() loop, tokenize() -> consume_tokens()
+###-----------------------------------------------------------------###
 def tokenize(input_line):
     input_line = (
         input_line.strip()
@@ -307,7 +334,9 @@ def consume_tokens(input_list):
 
 
 def main():
-    print(f"""mjForth {__version__}, Copyright (C) 2018-2020 Joe Dougherty.""")
+    print(
+        f"""mjForth {__version__}, Copyright (C) 2018-2020 Joe Dougherty."""
+    )
 
     while True:
         try:

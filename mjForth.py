@@ -101,6 +101,8 @@ def take_tokens(from_token, match_token, input_stream):
     if isinstance(input_stream, InputStream):
         input_list = input_stream._contents
     elif isinstance(input_stream, list):
+        print('found!')
+        print(input_stream)
         input_list = input_stream
 
     agg = []
@@ -188,11 +190,7 @@ def call_word(word):
 #   Section 3: for loops, while loops, conditionals 
 ###-----------------------------------------------------------------###
 def _resolve_iterator(i, fn_body_as_word_list):
-    """
-    Given an input list as fn_body_as_word_list,
-    replace instances of 'i' with a string version
-    of the current iterator.
-    """
+    ''' Replace 'i' with a string version of the current iterator. '''
     for idx, item in enumerate(fn_body_as_word_list):
         if item == "i":
             fn_body_as_word_list[idx] = str(i)

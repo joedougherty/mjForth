@@ -47,8 +47,8 @@ RESERVED = (
 def take_tokens(from_token, match_token, input_stream):
     if match_token not in input_stream:
         raise SyntaxError(
-            f'''Expected to encounter '{match_token}' in expression: \n'''
-            f'''{from_token} {" ".join(list_of_tokens)}'''
+            f"""Expected to encounter '{match_token}' in expression: \n"""
+            f"""{from_token} {" ".join(list_of_tokens)}"""
         )
 
     if isinstance(input_stream, InputStream):
@@ -66,7 +66,9 @@ def take_tokens(from_token, match_token, input_stream):
 
     return agg
 
+
 ###---###
+
 
 def must_be_defined(word):
     return (
@@ -98,7 +100,7 @@ def define_word(input_stream):
 
     redefined = name in Words.keys()
 
-    Words[name] = Word(comment, body) 
+    Words[name] = Word(comment, body)
 
     if redefined:
         print(f"""`{name}` was redefined.""")
@@ -124,13 +126,15 @@ def call_word(word):
         fn = Words[word].definition
     except KeyError:
         raise RunTimeError(f"""{word} is neither a function nor a list of words!""")
-        
+
     if callable(fn):
         fn()
     elif isinstance(fn, list):
         consume_tokens(copy(fn))
 
+
 ###---###
+
 
 def _resolve_iterator(i, fn_body_as_word_list):
     """
@@ -181,7 +185,9 @@ def parse_conditional(input_stream):
         else:
             consume_tokens(otherwise)
 
+
 ###---###
+
 
 def declare_variable(varname):
     if varname in Memory.keys():
@@ -195,14 +201,18 @@ def set_or_get_variable(token, input_stream):
 
     if next_token not in ("!", "@"):
         input_stream.clear()
-        raise SyntaxError(f'''Was trying to get or set variable '{token}', but line missing ! or @''')
+        raise SyntaxError(
+            f"""Was trying to get or set variable '{token}', but line missing ! or @"""
+        )
 
     if next_token == "!":
         Memory[token] = Data.pop()
-    else: # next_token == "@"
+    else:  # next_token == "@"
         Data.push(Memory[token])
 
+
 ###---###
+
 
 def is_a_literal(token):
     if token == "true":
@@ -222,40 +232,42 @@ def is_a_literal(token):
 
 ###---###
 
+
 def handle_token(token, input_stream):
     token_is_literal, parsed = is_a_literal(token)
 
-    if token_is_literal:  
+    if token_is_literal:
         # Push literals on to the Data stack
         Data.push(parsed)
-    elif token in Words.keys():  
+    elif token in Words.keys():
         # token is a Word -- call it!
         call_word(token)
-    elif token in Memory.keys():  
+    elif token in Memory.keys():
         # Get a variable definition or redefine existing variable
         set_or_get_variable(token, input_stream)
-    elif token == "see":  
+    elif token == "see":
         # Show a Word's definition
         show_definition(next(input_stream))
-    elif token == ":":  
+    elif token == ":":
         # Define a new Word
         define_word(input_stream)
-    elif token == "?DO":  
+    elif token == "?DO":
         # Execute DO loop
         doloop_body = take_tokens("?DO", "LOOP", input_stream)
         run_doloop(doloop_body)
-    elif token == "BEGIN":  
+    elif token == "BEGIN":
         # Execute WHILE loop
         whileloop_body = take_tokens("BEGIN", "WHILE", input_stream)
         run_whileloop(whileloop_body)
-    elif token == "IF":  
+    elif token == "IF":
         # Handle Conditionals
         parse_conditional(input_stream)
-    elif token == "variable":  
+    elif token == "variable":
         # Declare the existence of a new variable in Memory
         declare_variable(next(input_stream))
     else:
         raise SyntaxError(f"""I don't know what to do with `{token}` !!!""")
+
 
 ###---###
 
@@ -270,9 +282,9 @@ class InputStream:
     def clear(self):
         self._contents.clear()
 
-    def __iter__(self): 
+    def __iter__(self):
         return iter(self._contents)
-    
+
     def __next__(self):
         try:
             return self._contents.pop(0)
@@ -314,9 +326,11 @@ def main():
             consume_tokens(
                 tokenize(
                     prompt(
-                        "mjF> ", 
-                        history=FileHistory('.mjForth_history'), 
-                        completer=WordCompleter(list(Words.keys()) + ["see", "variable"])
+                        "mjF> ",
+                        history=FileHistory(".mjForth_history"),
+                        completer=WordCompleter(
+                            list(Words.keys()) + ["see", "variable"]
+                        ),
                     )
                 )
             )

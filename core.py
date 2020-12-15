@@ -9,12 +9,7 @@ import sys
 from IPython import embed
 
 
-class StackUnderflowError(Exception):
-    pass
-
-
-class StackOverflowError(Exception):
-    pass
+from exceptions import RunTimeError, StackOverflowError, StackUnderflowError
 
 
 class Stack:

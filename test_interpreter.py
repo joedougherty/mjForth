@@ -76,3 +76,12 @@ def test_exec_fib_sample_program():
     assert Data.height() == 10
     assert Data.peek() == 55
     assert Data.peek(-10) == 1
+
+
+def test_exec_better_fib_program():
+    Data.clear()
+
+    execute_file('examples/fibs.fs')
+
+    assert Data.height() == 1
+    assert Data.peek() == 55

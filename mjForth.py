@@ -21,6 +21,7 @@
 #   Section 1: imports, custom classes/exceptions, reserved words
 ###-----------------------------------------------------------------###
 from core import Data, TRUE, FALSE, Memory, Words, Word
+from exceptions import RunTimeError, StackOverflowError, StackUnderflowError
 
 from copy import copy
 import os
@@ -33,10 +34,6 @@ from prompt_toolkit.completion import WordCompleter
 
 
 __version__ = "0.0.5"
-
-
-class RunTimeError(Exception):
-    pass
 
 
 class InputStream:
@@ -344,6 +341,8 @@ def main():
         f"""mjForth {__version__}, Copyright (C) 2018-2020 Joe Dougherty."""
     )
 
+    errs = (RunTimeError, StackOverflowError, StackUnderflowError)
+    
     while True:
         try:
             consume_tokens(
@@ -360,7 +359,7 @@ def main():
             print(f"""ok <{Data.height()}>""")
         except KeyboardInterrupt:
             print("")
-        except (SyntaxError, RunTimeError) as e:
+        except errs as e:
             print(e)
         except EOFError:
             print("")
